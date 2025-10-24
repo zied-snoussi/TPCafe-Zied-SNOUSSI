@@ -22,4 +22,10 @@ public class CarteFidelite {
 
     @Column(name = "date_creation")
     private LocalDate dateCreation;
+
+    // inverse side of one-to-one with Client
+    @OneToOne(mappedBy = "carteFidelite")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Client client;
 }

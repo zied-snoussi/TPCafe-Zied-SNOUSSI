@@ -24,4 +24,18 @@ public class Detail_Commande {
 
     @Column(name = "sous_total_detail_article_apres_promo")
     private float sousTotalDetailArticleApresPromo;
+
+    // Many Detail_Commande belong to one Commande
+    @ManyToOne
+    @JoinColumn(name = "id_commande", referencedColumnName = "id_commande")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Commande commande;
+
+    // Many Detail_Commande refer to one Article
+    @ManyToOne
+    @JoinColumn(name = "id_article", referencedColumnName = "id_article")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Article article;
 }

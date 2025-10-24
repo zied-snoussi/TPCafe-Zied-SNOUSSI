@@ -24,4 +24,10 @@ public class Adresse {
 
     @Column(name = "code_postal")
     private String codePostal;
+
+    // inverse side of one-to-one with Client
+    @OneToOne(mappedBy = "adresse")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private Client client;
 }
