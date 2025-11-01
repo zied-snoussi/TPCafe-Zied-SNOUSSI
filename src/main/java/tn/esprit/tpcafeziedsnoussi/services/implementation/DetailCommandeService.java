@@ -1,0 +1,74 @@
+package tn.esprit.tpcafeziedsnoussi.services.implementation;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import tn.esprit.tpcafeziedsnoussi.entities.Detail_Commande;
+import tn.esprit.tpcafeziedsnoussi.repositories.Detail_CommandeRepository;
+import tn.esprit.tpcafeziedsnoussi.services.interfaces.IDetailCommandeService;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class DetailCommandeService implements IDetailCommandeService {
+
+    private final Detail_CommandeRepository detailCommandeRepository;
+
+    @Override
+    public Detail_Commande addDetailCommande(Detail_Commande detailCommande) {
+        return detailCommandeRepository.save(detailCommande);
+    }
+
+    @Override
+    public List<Detail_Commande> saveDetailCommandes(List<Detail_Commande> details) {
+        return detailCommandeRepository.saveAll(details);
+    }
+
+    @Override
+    public Detail_Commande selectDetailCommandeByIdWithOrElse(Long id) {
+        return detailCommandeRepository.findById(id).orElse(
+                Detail_Commande.builder()
+                        .quantiteArticle(0)
+                        .sousTotalDetailArticle(0f)
+                        .sousTotalDetailArticleApresPromo(0f)
+                        .build()
+        );
+    }
+
+    @Override
+    public List<Detail_Commande> selectAllDetailCommandes() {
+        return detailCommandeRepository.findAll();
+    }
+
+    @Override
+    public Detail_Commande updateDetailCommande(Detail_Commande detailCommande) {
+        if (!detailCommandeRepository.existsById(detailCommande.getIdDetailCommande())) {
+            throw new RuntimeException("Detail_Commande not found with id: " + detailCommande.getIdDetailCommande());
+        }
+        return detailCommandeRepository.save(detailCommande);
+    }
+
+    @Override
+    public void deleteDetailCommande(Detail_Commande detailCommande) {
+        detailCommandeRepository.delete(detailCommande);
+    }
+
+    @Override
+    public void deleteAllDetailCommandes() {
+        detailCommandeRepository.deleteAll();
+    }
+
+    @Override
+    public void deleteDetailCommandeById(Long id) {
+        if (!detailCommandeRepository.existsById(id)) {
+            throw new RuntimeException("Detail_Commande not found with id: " + id);
+        }
+        detailCommandeRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean verifDetailCommandeById(Long id) {
+        return detailCommandeRepository.existsById(id);
+    }
+}
+
