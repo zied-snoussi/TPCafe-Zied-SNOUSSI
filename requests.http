@@ -1,0 +1,110 @@
+### Client Endpoints
+GET http://localhost:8081/api/clients
+
+### Get Client by ID
+GET http://localhost:8081/api/clients/1
+
+### Create Client
+POST http://localhost:8081/api/clients
+Content-Type: application/json
+
+{
+  "nom": "Doe",
+  "prenom": "John",
+  "dateNaissance": "1990-01-01"
+}
+
+### Address Endpoints
+GET http://localhost:8081/api/adresses
+
+### Get Address by ID
+GET http://localhost:8081/api/adresses/1
+
+### Create Address
+POST http://localhost:8081/api/adresses
+Content-Type: application/json
+
+{
+  "rue": "123 Main St",
+  "ville": "City",
+  "codePostal": "12345"
+}
+
+### Article Endpoints
+GET http://localhost:8081/api/articles
+
+### Get Article by ID
+GET http://localhost:8081/api/articles/1
+
+### Create Article
+POST http://localhost:8081/api/articles
+Content-Type: application/json
+
+{
+  "nomArticle": "Café Expresso",
+  "prixArticle": 2.50,
+  "typeArticle": "BOISSON"
+}
+
+### Carte Fidelite Endpoints
+GET http://localhost:8081/api/cartes-fidelite
+
+### Get Carte Fidelite by ID
+GET http://localhost:8081/api/cartes-fidelite/1
+
+### Create Carte Fidelite
+POST http://localhost:8081/api/cartes-fidelite
+Content-Type: application/json
+
+{
+  "pointsAccumules": 0,
+  "dateCreation": "2025-11-01"
+}
+
+### Commande Endpoints
+GET http://localhost:8081/api/commandes
+
+### Get Commande by ID
+GET http://localhost:8081/api/commandes/1
+
+### Create Commande
+POST http://localhost:8081/api/commandes
+Content-Type: application/json
+
+{
+  "dateCommande": "2025-11-01",
+  "totalCommande": 0,
+  "statusCommande": "EN_ATTENTE"
+}
+
+### Detail Commande Endpoints
+GET http://localhost:8081/api/detail-commandes
+
+### Get Detail Commande by ID
+GET http://localhost:8081/api/detail-commandes/1
+
+### Create Detail Commande
+POST http://localhost:8081/api/detail-commandes
+Content-Type: application/json
+
+{
+  "quantiteArticle": 1,
+  "sousTotalDetailArticle": 2.50,
+  "sousTotalDetailArticleApresPromo": 2.50
+}
+
+### Promotion Endpoints
+GET http://localhost:8081/api/promotions
+
+### Get Promotion by ID
+GET http://localhost:8081/api/promotions/1
+
+### Create Promotion
+POST http://localhost:8081/api/promotions
+Content-Type: application/json
+
+{
+  "pourcentagePromo": 10.0,
+  "dateDebutPromo": "2025-11-01",
+  "dateFinPromo": "2025-12-01"
+}
