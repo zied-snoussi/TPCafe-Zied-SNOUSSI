@@ -2,30 +2,36 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "carte_fidelite")
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@ToString
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+//@RequiredArgsConstructor
 public class CarteFidelite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_carte_fidelite")
-    private Long idCarteFidelite;
+    Long idCarteFidelite;
 
     @Column(name = "points_accumules")
-    private int pointsAccumules;
+    int pointsAccumules;
 
     @Column(name = "date_creation")
-    private LocalDate dateCreation;
+    LocalDate dateCreation;
 
     // inverse side of one-to-one with Client
     @OneToOne(mappedBy = "carteFidelite")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Client client;
+    Client client;
 }

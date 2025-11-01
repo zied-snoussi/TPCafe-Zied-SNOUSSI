@@ -2,40 +2,45 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "detail_commande")
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@ToString
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+//@RequiredArgsConstructor
 public class Detail_Commande {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_detail_commande")
-    private Long idDetailCommande;
+    Long idDetailCommande;
 
     @Column(name = "quantite_article")
-    private int quantiteArticle;
+    int quantiteArticle;
 
     @Column(name = "sous_total_detail_article")
-    private float sousTotalDetailArticle;
+    float sousTotalDetailArticle;
 
     @Column(name = "sous_total_detail_article_apres_promo")
-    private float sousTotalDetailArticleApresPromo;
+    float sousTotalDetailArticleApresPromo;
 
     // Many Detail_Commande belong to one Commande
     @ManyToOne
     @JoinColumn(name = "id_commande", referencedColumnName = "id_commande")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Commande commande;
+    Commande commande;
 
     // Many Detail_Commande refer to one Article
     @ManyToOne
     @JoinColumn(name = "id_article", referencedColumnName = "id_article")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Article article;
+    Article article;
 }

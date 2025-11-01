@@ -2,32 +2,37 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "adresse")
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@ToString
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+//@RequiredArgsConstructor
 public class Adresse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_adresse")
-    private Long idAdresse;
+    Long idAdresse;
 
     @Column(name = "rue")
-    private String rue;
+    String rue;
 
     @Column(name = "ville")
-    private String ville;
+    String ville;
 
     @Column(name = "code_postal")
-    private String codePostal;
+    String codePostal;
 
     // inverse side of one-to-one with Client
     @OneToOne(mappedBy = "adresse")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Client client;
+    Client client;
 }
