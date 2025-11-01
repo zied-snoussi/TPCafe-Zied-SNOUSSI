@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
 import tn.esprit.tpcafeziedsnoussi.repositories.AdresseRepository;
-import tn.esprit.tpcafeziedsnoussi.services.adress.IAdressService;
+import tn.esprit.tpcafeziedsnoussi.services.interfaces.IAdressService;
 
 import java.util.List;
 
