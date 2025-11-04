@@ -1,5 +1,6 @@
 package tn.esprit.tpcafeziedsnoussi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,8 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "carte_fidelite")
 @Getter
-@Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
@@ -33,5 +33,6 @@ public class CarteFidelite {
     @OneToOne(mappedBy = "carteFidelite")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     Client client;
 }

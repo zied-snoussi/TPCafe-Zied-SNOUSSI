@@ -47,4 +47,9 @@ public class ClientRestController {
     public boolean verifClientById(@PathVariable Long id) {
         return clientService.verifClientById(id);
     }
+
+    @PatchMapping("/{id}")
+    public Client updateClientById(@PathVariable Long id, @RequestBody Client client) {
+        return clientService.updateClientById(id, client);
+    }
 }

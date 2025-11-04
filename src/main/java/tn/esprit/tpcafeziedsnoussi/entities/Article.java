@@ -1,5 +1,6 @@
 package tn.esprit.tpcafeziedsnoussi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,7 +13,7 @@ import java.util.List;
 @Table(name = "article")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
@@ -39,14 +40,15 @@ public class Article {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     List<Detail_Commande> detailCommandes = new ArrayList<>();
 
     // Many-to-many between Article and Promotion
     @ManyToMany
     @JoinTable(
-            name = "article_promotion",
-            joinColumns = @JoinColumn(name = "id_article"),
-            inverseJoinColumns = @JoinColumn(name = "id_promotion")
+        name = "article_promotion",
+        joinColumns = @JoinColumn(name = "id_article"),
+        inverseJoinColumns = @JoinColumn(name = "id_promotion")
     )
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

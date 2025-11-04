@@ -48,6 +48,15 @@ public class ClientService implements IClientService {
     }
 
     @Override
+    public Client updateClientById(Long id, Client client) {
+        if (!clientRepository.existsById(id)) {
+            throw new RuntimeException("Client not found with id: " + id);
+        }
+        client.setIdClient(id);
+        return clientRepository.save(client);
+    }
+
+    @Override
     public void deleteClient(Client client) {
         clientRepository.delete(client);
     }

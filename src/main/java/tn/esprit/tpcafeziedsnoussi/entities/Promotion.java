@@ -1,5 +1,6 @@
 package tn.esprit.tpcafeziedsnoussi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -12,12 +13,11 @@ import java.util.List;
 @Table(name = "promotion")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class Promotion {
 
     @Id
@@ -38,5 +38,6 @@ public class Promotion {
     @ManyToMany(mappedBy = "promotions")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     List<Article> articles = new ArrayList<>();
 }

@@ -1,5 +1,6 @@
 package tn.esprit.tpcafeziedsnoussi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -8,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "adresse")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
@@ -34,5 +35,6 @@ public class Adresse {
     @OneToOne(mappedBy = "adresse")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
+    @JsonIgnore
     Client client;
 }

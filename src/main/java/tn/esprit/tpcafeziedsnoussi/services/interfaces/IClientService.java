@@ -14,4 +14,5 @@ public interface IClientService {
     void deleteAllClients();
     void deleteClientById(Long id);
     boolean verifClientById(Long id);
+    Client updateClientById(Long id, Client client);
 }

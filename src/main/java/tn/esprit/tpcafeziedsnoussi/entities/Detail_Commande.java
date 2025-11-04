@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @Table(name = "detail_commande")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Builder
