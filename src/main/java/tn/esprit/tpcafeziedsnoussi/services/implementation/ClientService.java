@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Client;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.ClientRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 
@@ -26,12 +27,8 @@ public class ClientService implements IClientService {
 
     @Override
     public Client selectClientByIdWithOrElse(Long id) {
-        return clientRepository.findById(id).orElse(
-                Client.builder()
-                        .nom("unknown")
-                        .prenom("unknown")
-                        .build()
-        );
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", id));
     }
 
     @Override
@@ -42,7 +39,7 @@ public class ClientService implements IClientService {
     @Override
     public Client updateClient(Client client) {
         if (!clientRepository.existsById(client.getIdClient())) {
-            throw new RuntimeException("Client not found with id: " + client.getIdClient());
+            throw new ResourceNotFoundException("Client", "id", client.getIdClient());
         }
         return clientRepository.save(client);
     }
@@ -50,7 +47,7 @@ public class ClientService implements IClientService {
     @Override
     public Client updateClientById(Long id, Client client) {
         Client existingClient = clientRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Client not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", id));
         
         // Update only non-null fields
         if (client.getNom() != null) {
@@ -81,7 +78,7 @@ public class ClientService implements IClientService {
     @Override
     public void deleteClientById(Long id) {
         if (!clientRepository.existsById(id)) {
-            throw new RuntimeException("Client not found with id: " + id);
+            throw new ResourceNotFoundException("Client", "id", id);
         }
         clientRepository.deleteById(id);
     }

@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.AdresseRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IAdressService;
 
@@ -26,14 +27,8 @@ public class AdressService implements IAdressService {
 
     @Override
     public Adresse selectAdressByIdWithOrElse(Long id) {
-        // return the address if found, otherwise return a default Adresse instance
-        return adresseRepository.findById(id).orElse(
-                Adresse.builder()
-                        .rue("unknown")
-                        .ville("unknown")
-                        .codePostal("0000")
-                        .build()
-        );
+        return adresseRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Adresse", "id", id));
     }
 
     @Override
@@ -44,7 +39,7 @@ public class AdressService implements IAdressService {
     @Override
     public Adresse updateAdress(Adresse adresse) {
         if (!adresseRepository.existsById(adresse.getIdAdresse())) {
-            throw new RuntimeException("Address not found with id: " + adresse.getIdAdresse());
+            throw new ResourceNotFoundException("Adresse", "id", adresse.getIdAdresse());
         }
         return adresseRepository.save(adresse);
     }
@@ -62,7 +57,7 @@ public class AdressService implements IAdressService {
     @Override
     public void deleteAdressById(Long id) {
         if (!adresseRepository.existsById(id)) {
-            throw new RuntimeException("Address not found with id: " + id);
+            throw new ResourceNotFoundException("Adresse", "id", id);
         }
         adresseRepository.deleteById(id);
     }
@@ -75,7 +70,7 @@ public class AdressService implements IAdressService {
     @Override
     public Adresse patchAdressById(Long id, Adresse adresse) {
         Adresse existingAdresse = adresseRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Adresse", "id", id));
         
         if (adresse.getRue() != null) {
             existingAdresse.setRue(adresse.getRue());

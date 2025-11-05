@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Detail_Commande;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.Detail_CommandeRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IDetailCommandeService;
 
@@ -26,13 +27,8 @@ public class DetailCommandeService implements IDetailCommandeService {
 
     @Override
     public Detail_Commande selectDetailCommandeByIdWithOrElse(Long id) {
-        return detailCommandeRepository.findById(id).orElse(
-                Detail_Commande.builder()
-                        .quantiteArticle(0)
-                        .sousTotalDetailArticle(0f)
-                        .sousTotalDetailArticleApresPromo(0f)
-                        .build()
-        );
+        return detailCommandeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Detail_Commande", "id", id));
     }
 
     @Override
@@ -43,7 +39,7 @@ public class DetailCommandeService implements IDetailCommandeService {
     @Override
     public Detail_Commande updateDetailCommande(Detail_Commande detailCommande) {
         if (!detailCommandeRepository.existsById(detailCommande.getIdDetailCommande())) {
-            throw new RuntimeException("Detail_Commande not found with id: " + detailCommande.getIdDetailCommande());
+            throw new ResourceNotFoundException("Detail_Commande", "id", detailCommande.getIdDetailCommande());
         }
         return detailCommandeRepository.save(detailCommande);
     }
@@ -61,7 +57,7 @@ public class DetailCommandeService implements IDetailCommandeService {
     @Override
     public void deleteDetailCommandeById(Long id) {
         if (!detailCommandeRepository.existsById(id)) {
-            throw new RuntimeException("Detail_Commande not found with id: " + id);
+            throw new ResourceNotFoundException("Detail_Commande", "id", id);
         }
         detailCommandeRepository.deleteById(id);
     }
@@ -74,7 +70,7 @@ public class DetailCommandeService implements IDetailCommandeService {
     @Override
     public Detail_Commande patchDetailCommandeById(Long id, Detail_Commande detailCommande) {
         Detail_Commande existingDetail = detailCommandeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Detail_Commande not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Detail_Commande", "id", id));
         
         if (detailCommande.getQuantiteArticle() != 0) {
             existingDetail.setQuantiteArticle(detailCommande.getQuantiteArticle());

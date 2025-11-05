@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Article;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.ArticleRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IArticleService;
 
@@ -26,12 +27,8 @@ public class ArticleService implements IArticleService {
 
     @Override
     public Article selectArticleByIdWithOrElse(Long id) {
-        return articleRepository.findById(id).orElse(
-                Article.builder()
-                        .nomArticle("unknown")
-                        .prixArticle(0f)
-                        .build()
-        );
+        return articleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", id));
     }
 
     @Override
@@ -42,7 +39,7 @@ public class ArticleService implements IArticleService {
     @Override
     public Article updateArticle(Article article) {
         if (!articleRepository.existsById(article.getIdArticle())) {
-            throw new RuntimeException("Article not found with id: " + article.getIdArticle());
+            throw new ResourceNotFoundException("Article", "id", article.getIdArticle());
         }
         return articleRepository.save(article);
     }
@@ -60,7 +57,7 @@ public class ArticleService implements IArticleService {
     @Override
     public void deleteArticleById(Long id) {
         if (!articleRepository.existsById(id)) {
-            throw new RuntimeException("Article not found with id: " + id);
+            throw new ResourceNotFoundException("Article", "id", id);
         }
         articleRepository.deleteById(id);
     }
@@ -73,7 +70,7 @@ public class ArticleService implements IArticleService {
     @Override
     public Article patchArticleById(Long id, Article article) {
         Article existingArticle = articleRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Article not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", id));
         
         if (article.getNomArticle() != null) {
             existingArticle.setNomArticle(article.getNomArticle());

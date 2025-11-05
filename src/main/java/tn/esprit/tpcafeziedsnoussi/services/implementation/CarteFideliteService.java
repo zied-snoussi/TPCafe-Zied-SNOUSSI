@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.CarteFidelite;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.CarteFideliteRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.ICarteFideliteService;
 
@@ -26,11 +27,8 @@ public class CarteFideliteService implements ICarteFideliteService {
 
     @Override
     public CarteFidelite selectCarteFideliteByIdWithOrElse(Long id) {
-        return carteFideliteRepository.findById(id).orElse(
-                CarteFidelite.builder()
-                        .pointsAccumules(0)
-                        .build()
-        );
+        return carteFideliteRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("CarteFidelite", "id", id));
     }
 
     @Override
@@ -41,7 +39,7 @@ public class CarteFideliteService implements ICarteFideliteService {
     @Override
     public CarteFidelite updateCarteFidelite(CarteFidelite carteFidelite) {
         if (!carteFideliteRepository.existsById(carteFidelite.getIdCarteFidelite())) {
-            throw new RuntimeException("CarteFidelite not found with id: " + carteFidelite.getIdCarteFidelite());
+            throw new ResourceNotFoundException("CarteFidelite", "id", carteFidelite.getIdCarteFidelite());
         }
         return carteFideliteRepository.save(carteFidelite);
     }
@@ -59,7 +57,7 @@ public class CarteFideliteService implements ICarteFideliteService {
     @Override
     public void deleteCarteFideliteById(Long id) {
         if (!carteFideliteRepository.existsById(id)) {
-            throw new RuntimeException("CarteFidelite not found with id: " + id);
+            throw new ResourceNotFoundException("CarteFidelite", "id", id);
         }
         carteFideliteRepository.deleteById(id);
     }
@@ -72,7 +70,7 @@ public class CarteFideliteService implements ICarteFideliteService {
     @Override
     public CarteFidelite patchCarteFideliteById(Long id, CarteFidelite carteFidelite) {
         CarteFidelite existingCarte = carteFideliteRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("CarteFidelite not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("CarteFidelite", "id", id));
         
         if (carteFidelite.getPointsAccumules() != 0) {
             existingCarte.setPointsAccumules(carteFidelite.getPointsAccumules());

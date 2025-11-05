@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Promotion;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.PromotionRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IPromotionService;
 
@@ -26,11 +27,8 @@ public class PromotionService implements IPromotionService {
 
     @Override
     public Promotion selectPromotionByIdWithOrElse(Long id) {
-        return promotionRepository.findById(id).orElse(
-                Promotion.builder()
-                        .pourcentagePromo(0f)
-                        .build()
-        );
+        return promotionRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion", "id", id));
     }
 
     @Override
@@ -41,7 +39,7 @@ public class PromotionService implements IPromotionService {
     @Override
     public Promotion updatePromotion(Promotion promotion) {
         if (!promotionRepository.existsById(promotion.getIdPromotion())) {
-            throw new RuntimeException("Promotion not found with id: " + promotion.getIdPromotion());
+            throw new ResourceNotFoundException("Promotion", "id", promotion.getIdPromotion());
         }
         return promotionRepository.save(promotion);
     }
@@ -59,7 +57,7 @@ public class PromotionService implements IPromotionService {
     @Override
     public void deletePromotionById(Long id) {
         if (!promotionRepository.existsById(id)) {
-            throw new RuntimeException("Promotion not found with id: " + id);
+            throw new ResourceNotFoundException("Promotion", "id", id);
         }
         promotionRepository.deleteById(id);
     }
@@ -72,7 +70,7 @@ public class PromotionService implements IPromotionService {
     @Override
     public Promotion patchPromotionById(Long id, Promotion promotion) {
         Promotion existingPromotion = promotionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion", "id", id));
         
         if (promotion.getPourcentagePromo() != 0) {
             existingPromotion.setPourcentagePromo(promotion.getPourcentagePromo());

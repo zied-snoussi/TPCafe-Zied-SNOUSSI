@@ -3,6 +3,7 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Commande;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.CommandeRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.ICommandeService;
 
@@ -26,11 +27,8 @@ public class CommandeService implements ICommandeService {
 
     @Override
     public Commande selectCommandeByIdWithOrElse(Long id) {
-        return commandeRepository.findById(id).orElse(
-                Commande.builder()
-                        .totalCommande(0f)
-                        .build()
-        );
+        return commandeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande", "id", id));
     }
 
     @Override
@@ -41,7 +39,7 @@ public class CommandeService implements ICommandeService {
     @Override
     public Commande updateCommande(Commande commande) {
         if (!commandeRepository.existsById(commande.getIdCommande())) {
-            throw new RuntimeException("Commande not found with id: " + commande.getIdCommande());
+            throw new ResourceNotFoundException("Commande", "id", commande.getIdCommande());
         }
         return commandeRepository.save(commande);
     }
@@ -59,7 +57,7 @@ public class CommandeService implements ICommandeService {
     @Override
     public void deleteCommandeById(Long id) {
         if (!commandeRepository.existsById(id)) {
-            throw new RuntimeException("Commande not found with id: " + id);
+            throw new ResourceNotFoundException("Commande", "id", id);
         }
         commandeRepository.deleteById(id);
     }
@@ -72,7 +70,7 @@ public class CommandeService implements ICommandeService {
     @Override
     public Commande patchCommandeById(Long id, Commande commande) {
         Commande existingCommande = commandeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Commande not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Commande", "id", id));
         
         if (commande.getDateCommande() != null) {
             existingCommande.setDateCommande(commande.getDateCommande());
