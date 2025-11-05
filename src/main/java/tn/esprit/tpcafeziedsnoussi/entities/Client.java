@@ -2,6 +2,10 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
@@ -26,12 +30,18 @@ public class Client {
     Long idClient;
 
     @Column(name = "nom")
+    @NotBlank(message = "Last name is required")
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     String nom;
 
     @Column(name = "prenom")
+    @NotBlank(message = "First name is required")
+    @Size(min = 2, max = 50, message = "First name must be between 2 and 50 characters")
     String prenom;
 
     @Column(name = "date_naissance")
+    @NotNull(message = "Birth date is required")
+    @Past(message = "Birth date must be in the past")
     LocalDate dateNaissance;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -50,5 +60,6 @@ public class Client {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnore
+    @Builder.Default
     List<Commande> commandes = new ArrayList<>();
 }

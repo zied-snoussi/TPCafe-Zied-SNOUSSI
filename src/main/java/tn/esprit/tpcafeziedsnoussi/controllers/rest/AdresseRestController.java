@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +38,7 @@ public class AdresseRestController {
     })
     public ResponseEntity<AdresseDTO> addAdresse(
             @Parameter(description = "Address data to create", required = true)
-            @RequestBody AdresseDTO adresseDTO) {
+            @Valid @RequestBody AdresseDTO adresseDTO) {
         var adresse = adresseMapper.toEntity(adresseDTO);
         var savedAdresse = adressService.addAdress(adresse);
         return ResponseEntity.ok(adresseMapper.toDTO(savedAdresse));

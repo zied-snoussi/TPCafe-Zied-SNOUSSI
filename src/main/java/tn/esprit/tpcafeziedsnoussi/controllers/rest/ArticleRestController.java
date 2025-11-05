@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class ArticleRestController {
     })
     public ResponseEntity<ArticleDTO> addArticle(
             @Parameter(description = "Article data to create", required = true)
-            @RequestBody ArticleDTO articleDTO) {
+            @Valid @RequestBody ArticleDTO articleDTO) {
         var article = articleMapper.toEntity(articleDTO);
         var savedArticle = articleService.addArticle(article);
         return ResponseEntity.ok(articleMapper.toDTO(savedArticle));
@@ -94,7 +95,7 @@ public class ArticleRestController {
     })
     public ResponseEntity<ArticleDTO> updateArticle(
             @Parameter(description = "Article data to update", required = true)
-            @RequestBody ArticleDTO articleDTO) {
+            @Valid @RequestBody ArticleDTO articleDTO) {
         var article = articleMapper.toEntity(articleDTO);
         var updatedArticle = articleService.updateArticle(article);
         return ResponseEntity.ok(articleMapper.toDTO(updatedArticle));

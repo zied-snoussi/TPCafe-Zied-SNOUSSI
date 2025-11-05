@@ -2,6 +2,8 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import tn.esprit.tpcafeziedsnoussi.enums.StatusCommande;
@@ -28,13 +30,16 @@ public class Commande {
     Long idCommande;
 
     @Column(name = "date_commande")
+    @NotNull(message = "Order date is required")
     LocalDate dateCommande;
 
     @Column(name = "total_commande")
+    @PositiveOrZero(message = "Order total must be zero or positive")
     float totalCommande;
 
     @Column(name = "status_commande")
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "Order status is required")
     StatusCommande statusCommande;
 
     // Relation to Client (many commandes can belong to one client)
@@ -49,5 +54,6 @@ public class Commande {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @JsonIgnore
+    @Builder.Default
     List<Detail_Commande> detailCommandes = new ArrayList<>();
 }

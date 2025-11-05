@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class CommandeRestController {
     })
     public ResponseEntity<Commande> addCommande(
             @Parameter(description = "Order data to create", required = true)
-            @RequestBody Commande commande) {
+            @Valid @RequestBody Commande commande) {
         return ResponseEntity.ok(commandeService.addCommande(commande));
     }
 
@@ -79,7 +80,7 @@ public class CommandeRestController {
     })
     public ResponseEntity<Commande> updateCommande(
             @Parameter(description = "Order data to update", required = true)
-            @RequestBody Commande commande) {
+            @Valid @RequestBody Commande commande) {
         return ResponseEntity.ok(commandeService.updateCommande(commande));
     }
 

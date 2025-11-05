@@ -2,6 +2,8 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -25,9 +27,11 @@ public class CarteFidelite {
     Long idCarteFidelite;
 
     @Column(name = "points_accumules")
+    @PositiveOrZero(message = "Accumulated points must be zero or positive")
     int pointsAccumules;
 
     @Column(name = "date_creation")
+    @NotNull(message = "Creation date is required")
     LocalDate dateCreation;
 
     // inverse side of one-to-one with Client

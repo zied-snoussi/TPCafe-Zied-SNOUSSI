@@ -2,6 +2,9 @@ package tn.esprit.tpcafeziedsnoussi.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -23,12 +26,18 @@ public class Adresse {
     Long idAdresse;
 
     @Column(name = "rue")
+    @NotBlank(message = "Street is required")
+    @Size(min = 3, max = 100, message = "Street must be between 3 and 100 characters")
     String rue;
 
     @Column(name = "ville")
+    @NotBlank(message = "City is required")
+    @Size(min = 2, max = 50, message = "City must be between 2 and 50 characters")
     String ville;
 
     @Column(name = "code_postal")
+    @NotBlank(message = "Postal code is required")
+    @Pattern(regexp = "^\\d{4}$", message = "Postal code must be 4 digits")
     String codePostal;
 
     // inverse side of one-to-one with Client

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class PromotionRestController {
     })
     public ResponseEntity<Promotion> addPromotion(
             @Parameter(description = "Promotion data to create", required = true)
-            @RequestBody Promotion promotion) {
+            @Valid @RequestBody Promotion promotion) {
         return ResponseEntity.ok(promotionService.addPromotion(promotion));
     }
 

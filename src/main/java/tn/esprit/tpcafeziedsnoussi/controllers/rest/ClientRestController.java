@@ -7,7 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpcafeziedsnoussi.entities.Client;
@@ -16,12 +17,12 @@ import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("/clients")
 @CrossOrigin("*")
 @Tag(name = "Client Management", description = "APIs for managing clients/customers in the TPCafe system")
 public class ClientRestController {
-    IClientService clientService;
+    private final IClientService clientService;
 
     @GetMapping
     @Operation(summary = "Get all clients", description = "Retrieves a list of all clients in the system")
@@ -52,7 +53,7 @@ public class ClientRestController {
     })
     public ResponseEntity<Client> addClient(
             @Parameter(description = "Client data to create", required = true)
-            @RequestBody Client client) {
+            @Valid @RequestBody Client client) {
         return ResponseEntity.ok(clientService.addClient(client));
     }
 
@@ -66,7 +67,7 @@ public class ClientRestController {
     })
     public ResponseEntity<Client> updateClient(
             @Parameter(description = "Client data to update", required = true)
-            @RequestBody Client client) {
+            @Valid @RequestBody Client client) {
         return ResponseEntity.ok(clientService.updateClient(client));
     }
 
