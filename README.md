@@ -4,6 +4,8 @@ A comprehensive REST API for managing a café business, built with Spring Boot 3
 
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Docker](https://img.shields.io/badge/Docker-Ready-blue.svg)](https://www.docker.com/)
+[![CI/CD](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-green.svg)](https://github.com/features/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
 ## 📋 Table of Contents
@@ -12,9 +14,12 @@ A comprehensive REST API for managing a café business, built with Spring Boot 3
 - [Tech Stack](#-tech-stack)
 - [Architecture](#-architecture)
 - [Getting Started](#-getting-started)
+  - [Local Development](#local-development)
+  - [Docker Setup](#docker-setup)
 - [API Documentation](#-api-documentation)
 - [Database Schema](#-database-schema)
 - [Testing](#-testing)
+- [CI/CD Pipeline](#-cicd-pipeline)
 - [Project Structure](#-project-structure)
 - [Configuration](#-configuration)
 - [Contributing](#-contributing)
@@ -39,6 +44,10 @@ A comprehensive REST API for managing a café business, built with Spring Boot 3
 - 🧪 **Comprehensive Testing** - Unit, integration, and validation tests
 - 🗄️ **JPA/Hibernate** - ORM with MySQL database
 - 🎯 **RESTful Design** - Following REST best practices
+- 🐳 **Docker Support** - Containerized deployment with Docker Compose
+- 🚀 **CI/CD Pipeline** - Automated testing and deployment with GitHub Actions
+- 📊 **Health Checks** - Spring Boot Actuator for monitoring
+- 🎭 **DTO Pattern** - Clean API layer with Data Transfer Objects
 
 ## 🛠️ Tech Stack
 
@@ -63,6 +72,11 @@ A comprehensive REST API for managing a café business, built with Spring Boot 3
 
 ### Build Tool
 - **Maven** - Dependency management and build automation
+
+### DevOps
+- **Docker** - Containerization
+- **Docker Compose** - Multi-container orchestration
+- **GitHub Actions** - CI/CD automation
 
 ## 🏗️ Architecture
 
@@ -89,14 +103,17 @@ The project follows a **layered architecture** pattern:
 
 ## 🚀 Getting Started
 
-### Prerequisites
+Choose your preferred setup method:
 
+### Local Development
+
+**Prerequisites:**
 - Java 17 or higher
 - Maven 3.6+
 - MySQL 8.0+
 - Git
 
-### Installation
+**Steps:**
 
 1. **Clone the repository**
 ```bash
@@ -105,8 +122,6 @@ cd TPCafe-Zied-SNOUSSI
 ```
 
 2. **Configure MySQL Database**
-
-Create a MySQL database:
 ```sql
 CREATE DATABASE DB_Cafe;
 ```
@@ -118,27 +133,50 @@ spring.datasource.username=your_username
 spring.datasource.password=your_password
 ```
 
-3. **Build the project**
+3. **Build and run**
 ```bash
 mvn clean install
-```
-
-4. **Run the application**
-```bash
 mvn spring-boot:run
 ```
 
 The application will start on `http://localhost:8081/api`
 
-### Quick Start with Docker (Optional)
+### Docker Setup
+
+**Prerequisites:**
+- Docker Desktop (Windows/Mac) or Docker Engine (Linux)
+- Docker Compose
+
+**Quick Start:**
 
 ```bash
-# Build the application
-mvn clean package -DskipTests
+# Clone the repository
+git clone https://github.com/zied-snoussi/TPCafe-Zied-SNOUSSI.git
+cd TPCafe-Zied-SNOUSSI
 
-# Run with Docker Compose (if docker-compose.yml is available)
+# Start all services (MySQL + Spring Boot)
 docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
 ```
+
+**What you get:**
+- ✅ MySQL database (port 3307)
+- ✅ Spring Boot application (port 8081)
+- ✅ Automatic database initialization
+- ✅ Health checks enabled
+- ✅ No manual configuration needed
+
+**Access:**
+- API: http://localhost:8081/api
+- Swagger UI: http://localhost:8081/api/swagger-ui.html
+- Health Check: http://localhost:8081/api/actuator/health
+
+For detailed Docker instructions, see [DOCKER.md](DOCKER.md)
 
 ## 📚 API Documentation
 
@@ -308,10 +346,56 @@ mvn clean test jacoco:report
 open target/site/jacoco/index.html
 ```
 
+## 🚀 CI/CD Pipeline
+
+The project includes automated CI/CD workflows using **GitHub Actions**.
+
+### Workflows
+
+1. **CI/CD Pipeline** (`.github/workflows/ci-cd.yml`)
+   - Triggers on push/PR to main, master, develop branches
+   - Builds and tests the application
+   - Builds and pushes Docker images
+   - Deploys to production (configurable)
+
+2. **Docker Publish** (`.github/workflows/docker-publish.yml`)
+   - Triggers on new releases
+   - Builds multi-platform Docker images
+   - Publishes to Docker Hub with semantic versioning
+
+3. **PR Check** (`.github/workflows/pr-check.yml`)
+   - Validates pull requests
+   - Runs tests and code quality checks
+   - Comments on PR with results
+
+### Setup
+
+1. **Add GitHub Secrets:**
+   - `DOCKER_USERNAME` - Your Docker Hub username
+   - `DOCKER_PASSWORD` - Your Docker Hub access token
+
+2. **Push to trigger:**
+```bash
+git add .
+git commit -m "feat: add new feature"
+git push origin main
+```
+
+3. **Monitor workflows:**
+   - Go to Actions tab in GitHub
+   - View workflow runs and logs
+
+For detailed CI/CD documentation, see [CI-CD.md](CI-CD.md)
+
 ## 📁 Project Structure
 
 ```
 TPCafe-Zied-SNOUSSI/
+├── .github/                         # GitHub Actions workflows
+│   └── workflows/
+│       ├── ci-cd.yml               # Main CI/CD pipeline
+│       ├── docker-publish.yml      # Docker image publishing
+│       └── pr-check.yml            # Pull request validation
 ├── src/
 │   ├── main/
 │   │   ├── java/tn/esprit/tpcafeziedsnoussi/
@@ -366,6 +450,7 @@ TPCafe-Zied-SNOUSSI/
 │   │   │           └── ...
 │   │   └── resources/
 │   │       ├── application.properties
+│   │       ├── application-docker.properties
 │   │       ├── static/
 │   │       └── templates/
 │   └── test/
@@ -379,8 +464,19 @@ TPCafe-Zied-SNOUSSI/
 │       │   └── utils/               # Test utilities
 │       └── resources/
 │           └── application-test.properties
-├── pom.xml
-└── README.md
+├── Dockerfile                       # Docker image definition
+├── docker-compose.yml              # Multi-container setup
+├── docker-compose.dev.yml          # Development environment
+├── docker-compose.prod.yml         # Production overrides
+├── .dockerignore                   # Docker build exclusions
+├── docker-build.sh                 # Build script (Linux/Mac)
+├── docker-build.bat                # Build script (Windows)
+├── init-db.sql                     # Database initialization
+├── .env.example                    # Environment variables template
+├── pom.xml                         # Maven configuration
+├── README.md                       # Main documentation
+├── DOCKER.md                       # Docker guide
+└── CI-CD.md                        # CI/CD documentation
 ```
 
 ## ⚙️ Configuration

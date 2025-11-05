@@ -1,0 +1,27 @@
+version: '3.8'
+
+# Development docker-compose with hot reload and debugging enabled
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: tpcafe-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: tpcafe_dev
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: tpcafe_user
+      MYSQL_PASSWORD: tpcafe_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-dev-data:/var/lib/mysql
+    networks:
+      - tpcafe-dev-network
+
+volumes:
+  mysql-dev-data:
+    driver: local
+
+networks:
+  tpcafe-dev-network:
+    driver: bridge
