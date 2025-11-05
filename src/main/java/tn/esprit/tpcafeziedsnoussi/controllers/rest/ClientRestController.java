@@ -11,10 +11,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.tpcafeziedsnoussi.entities.Client;
+import tn.esprit.tpcafeziedsnoussi.dtos.ClientDTO;
+import tn.esprit.tpcafeziedsnoussi.mappers.ClientMapper;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,52 +25,59 @@ import java.util.List;
 @Tag(name = "Client Management", description = "APIs for managing clients/customers in the TPCafe system")
 public class ClientRestController {
     private final IClientService clientService;
+    private final ClientMapper clientMapper;
 
     @GetMapping
     @Operation(summary = "Get all clients", description = "Retrieves a list of all clients in the system")
     @ApiResponse(responseCode = "200", description = "List of clients retrieved successfully")
-    public ResponseEntity<List<Client>> selectAllClients() {
-        return ResponseEntity.ok(clientService.selectAllClients());
+    public ResponseEntity<List<ClientDTO>> selectAllClients() {
+        return ResponseEntity.ok(clientService.selectAllClients().stream()
+                .map(clientMapper::toDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get client by ID", description = "Retrieves a specific client by their ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client found",
-                    content = @Content(schema = @Schema(implementation = Client.class))),
+                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
             @ApiResponse(responseCode = "404", description = "Client not found", content = @Content)
     })
-    public ResponseEntity<Client> selectClientByIdWithOrElse(
+    public ResponseEntity<ClientDTO> selectClientByIdWithOrElse(
             @Parameter(description = "ID of the client to retrieve", required = true)
             @PathVariable Long id) {
-        return ResponseEntity.ok(clientService.selectClientByIdWithOrElse(id));
+        return ResponseEntity.ok(clientMapper.toDTO(clientService.selectClientByIdWithOrElse(id)));
     }
 
     @PostMapping
     @Operation(summary = "Create a new client", description = "Creates a new client in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client created successfully",
-                    content = @Content(schema = @Schema(implementation = Client.class))),
+                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Client> addClient(
+    public ResponseEntity<ClientDTO> addClient(
             @Parameter(description = "Client data to create", required = true)
-            @Valid @RequestBody Client client) {
-        return ResponseEntity.ok(clientService.addClient(client));
+            @Valid @RequestBody ClientDTO clientDTO) {
+        var client = clientMapper.toEntity(clientDTO);
+        var savedClient = clientService.addClient(client);
+        return ResponseEntity.ok(clientMapper.toDTO(savedClient));
     }
 
     @PutMapping
     @Operation(summary = "Update a client", description = "Updates an existing client (full update)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client updated successfully",
-                    content = @Content(schema = @Schema(implementation = Client.class))),
+                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
             @ApiResponse(responseCode = "404", description = "Client not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Client> updateClient(
+    public ResponseEntity<ClientDTO> updateClient(
             @Parameter(description = "Client data to update", required = true)
-            @Valid @RequestBody Client client) {
-        return ResponseEntity.ok(clientService.updateClient(client));
+            @Valid @RequestBody ClientDTO clientDTO) {
+        var client = clientMapper.toEntity(clientDTO);
+        var updatedClient = clientService.updateClient(client);
+        return ResponseEntity.ok(clientMapper.toDTO(updatedClient));
     }
 
     @DeleteMapping
@@ -79,7 +88,8 @@ public class ClientRestController {
     })
     public ResponseEntity<Void> deleteClient(
             @Parameter(description = "Client to delete", required = true)
-            @RequestBody Client client) {
+            @RequestBody ClientDTO clientDTO) {
+        var client = clientMapper.toEntity(clientDTO);
         clientService.deleteClient(client);
         return ResponseEntity.ok().build();
     }
@@ -110,15 +120,17 @@ public class ClientRestController {
     @Operation(summary = "Partially update a client", description = "Updates specific fields of an existing client")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Client partially updated successfully",
-                    content = @Content(schema = @Schema(implementation = Client.class))),
+                    content = @Content(schema = @Schema(implementation = ClientDTO.class))),
             @ApiResponse(responseCode = "404", description = "Client not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Client> updateClientById(
+    public ResponseEntity<ClientDTO> updateClientById(
             @Parameter(description = "ID of the client to update", required = true)
             @PathVariable Long id,
             @Parameter(description = "Partial client data to update", required = true)
-            @RequestBody Client client) {
-        return ResponseEntity.ok(clientService.updateClientById(id, client));
+            @RequestBody ClientDTO clientDTO) {
+        var client = clientMapper.toEntity(clientDTO);
+        var updatedClient = clientService.updateClientById(id, client);
+        return ResponseEntity.ok(clientMapper.toDTO(updatedClient));
     }
 }

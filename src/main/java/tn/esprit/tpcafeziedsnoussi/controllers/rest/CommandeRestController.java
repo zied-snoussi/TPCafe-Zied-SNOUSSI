@@ -11,10 +11,12 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tn.esprit.tpcafeziedsnoussi.entities.Commande;
+import tn.esprit.tpcafeziedsnoussi.dtos.CommandeDTO;
+import tn.esprit.tpcafeziedsnoussi.mappers.CommandeMapper;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.ICommandeService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/commandes")
@@ -24,18 +26,21 @@ import java.util.List;
 public class CommandeRestController {
 
     private final ICommandeService commandeService;
+    private final CommandeMapper commandeMapper;
 
     @PostMapping
     @Operation(summary = "Create a new order", description = "Creates a new order in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order created successfully",
-                    content = @Content(schema = @Schema(implementation = Commande.class))),
+                    content = @Content(schema = @Schema(implementation = CommandeDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Commande> addCommande(
+    public ResponseEntity<CommandeDTO> addCommande(
             @Parameter(description = "Order data to create", required = true)
-            @Valid @RequestBody Commande commande) {
-        return ResponseEntity.ok(commandeService.addCommande(commande));
+            @Valid @RequestBody CommandeDTO commandeDTO) {
+        var commande = commandeMapper.toEntity(commandeDTO);
+        var savedCommande = commandeService.addCommande(commande);
+        return ResponseEntity.ok(commandeMapper.toDTO(savedCommande));
     }
 
     @PostMapping("/bulk")
@@ -44,60 +49,72 @@ public class CommandeRestController {
             @ApiResponse(responseCode = "200", description = "Orders created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<List<Commande>> addCommandes(
+    public ResponseEntity<List<CommandeDTO>> addCommandes(
             @Parameter(description = "List of orders to create", required = true)
-            @RequestBody List<Commande> commandes) {
-        return ResponseEntity.ok(commandeService.saveCommandes(commandes));
+            @RequestBody List<CommandeDTO> commandeDTOs) {
+        var commandes = commandeDTOs.stream()
+                .map(commandeMapper::toEntity)
+                .collect(Collectors.toList());
+        var savedCommandes = commandeService.saveCommandes(commandes);
+        return ResponseEntity.ok(savedCommandes.stream()
+                .map(commandeMapper::toDTO)
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get order by ID", description = "Retrieves a specific order by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order found",
-                    content = @Content(schema = @Schema(implementation = Commande.class))),
+                    content = @Content(schema = @Schema(implementation = CommandeDTO.class))),
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
     })
-    public ResponseEntity<Commande> getCommandeById(
+    public ResponseEntity<CommandeDTO> getCommandeById(
             @Parameter(description = "ID of the order to retrieve", required = true)
             @PathVariable Long id) {
-        return ResponseEntity.ok(commandeService.selectCommandeByIdWithOrElse(id));
+        return ResponseEntity.ok(commandeMapper.toDTO(commandeService.selectCommandeByIdWithOrElse(id)));
     }
 
     @GetMapping
     @Operation(summary = "Get all orders", description = "Retrieves a list of all orders in the system")
     @ApiResponse(responseCode = "200", description = "List of orders retrieved successfully")
-    public ResponseEntity<List<Commande>> getAllCommandes() {
-        return ResponseEntity.ok(commandeService.selectAllCommandes());
+    public ResponseEntity<List<CommandeDTO>> getAllCommandes() {
+        return ResponseEntity.ok(commandeService.selectAllCommandes().stream()
+                .map(commandeMapper::toDTO)
+                .collect(Collectors.toList()));
     }
 
     @PutMapping
     @Operation(summary = "Update an order", description = "Updates an existing order (full update)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order updated successfully",
-                    content = @Content(schema = @Schema(implementation = Commande.class))),
+                    content = @Content(schema = @Schema(implementation = CommandeDTO.class))),
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Commande> updateCommande(
+    public ResponseEntity<CommandeDTO> updateCommande(
             @Parameter(description = "Order data to update", required = true)
-            @Valid @RequestBody Commande commande) {
-        return ResponseEntity.ok(commandeService.updateCommande(commande));
+            @Valid @RequestBody CommandeDTO commandeDTO) {
+        var commande = commandeMapper.toEntity(commandeDTO);
+        var updatedCommande = commandeService.updateCommande(commande);
+        return ResponseEntity.ok(commandeMapper.toDTO(updatedCommande));
     }
 
     @PatchMapping("/{id}")
     @Operation(summary = "Partially update an order", description = "Updates specific fields of an existing order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order partially updated successfully",
-                    content = @Content(schema = @Schema(implementation = Commande.class))),
+                    content = @Content(schema = @Schema(implementation = CommandeDTO.class))),
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
     })
-    public ResponseEntity<Commande> patchCommande(
+    public ResponseEntity<CommandeDTO> patchCommande(
             @Parameter(description = "ID of the order to update", required = true)
             @PathVariable Long id,
             @Parameter(description = "Partial order data to update", required = true)
-            @RequestBody Commande commande) {
-        return ResponseEntity.ok(commandeService.patchCommandeById(id, commande));
+            @RequestBody CommandeDTO commandeDTO) {
+        var commande = commandeMapper.toEntity(commandeDTO);
+        var patchedCommande = commandeService.patchCommandeById(id, commande);
+        return ResponseEntity.ok(commandeMapper.toDTO(patchedCommande));
     }
 
     @DeleteMapping("/{id}")
