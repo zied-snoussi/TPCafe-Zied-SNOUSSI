@@ -10,6 +10,7 @@ public interface ICommandeService {
     Commande selectCommandeByIdWithOrElse(Long id);
     List<Commande> selectAllCommandes();
     Commande updateCommande(Commande commande);
+    Commande patchCommandeById(Long id, Commande commande);
     void deleteCommande(Commande commande);
     void deleteAllCommandes();
     void deleteCommandeById(Long id);

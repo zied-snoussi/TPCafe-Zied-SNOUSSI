@@ -1,9 +1,14 @@
 package tn.esprit.tpcafeziedsnoussi.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class OpenAPIConfig {
@@ -12,8 +17,24 @@ public class OpenAPIConfig {
     public OpenAPI springShopOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("TPCafe API")
-                        .description("TPCafe Spring Boot REST API Documentation")
-                        .version("1.0"));
+                        .title("TPCafe REST API")
+                        .description("Comprehensive REST API for TPCafe Management System - " +
+                                "Manage clients, orders, articles, promotions, loyalty cards, and addresses")
+                        .version("1.0.0")
+                        .contact(new Contact()
+                                .name("Zied SNOUSSI")
+                                .email("zied.snoussi@esprit.tn")
+                                .url("https://github.com/zied-snoussi"))
+                        .license(new License()
+                                .name("Apache 2.0")
+                                .url("https://www.apache.org/licenses/LICENSE-2.0.html")))
+                .servers(List.of(
+                        new Server()
+                                .url("http://localhost:8081/api")
+                                .description("Development Server"),
+                        new Server()
+                                .url("https://api.tpcafe.com")
+                                .description("Production Server")
+                ));
     }
 }

@@ -10,6 +10,7 @@ public interface IAdressService {
     Adresse selectAdressByIdWithOrElse(Long id);
     List<Adresse> selectAllAdresses();
     Adresse updateAdress(Adresse adresse);
+    Adresse patchAdressById(Long id, Adresse adresse);
     void deleteAdress(Adresse adresse);
     void deleteAllAdresses();
     void deleteAdressById(Long id);

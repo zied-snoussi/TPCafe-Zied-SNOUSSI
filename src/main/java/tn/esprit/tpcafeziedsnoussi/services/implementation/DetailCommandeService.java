@@ -70,5 +70,23 @@ public class DetailCommandeService implements IDetailCommandeService {
     public boolean verifDetailCommandeById(Long id) {
         return detailCommandeRepository.existsById(id);
     }
+
+    @Override
+    public Detail_Commande patchDetailCommandeById(Long id, Detail_Commande detailCommande) {
+        Detail_Commande existingDetail = detailCommandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Detail_Commande not found with id: " + id));
+        
+        if (detailCommande.getQuantiteArticle() != 0) {
+            existingDetail.setQuantiteArticle(detailCommande.getQuantiteArticle());
+        }
+        if (detailCommande.getSousTotalDetailArticle() != 0) {
+            existingDetail.setSousTotalDetailArticle(detailCommande.getSousTotalDetailArticle());
+        }
+        if (detailCommande.getSousTotalDetailArticleApresPromo() != 0) {
+            existingDetail.setSousTotalDetailArticleApresPromo(detailCommande.getSousTotalDetailArticleApresPromo());
+        }
+        
+        return detailCommandeRepository.save(existingDetail);
+    }
 }
 

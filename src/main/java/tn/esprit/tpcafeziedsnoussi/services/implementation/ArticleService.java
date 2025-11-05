@@ -69,5 +69,23 @@ public class ArticleService implements IArticleService {
     public boolean verifArticleById(Long id) {
         return articleRepository.existsById(id);
     }
+
+    @Override
+    public Article patchArticleById(Long id, Article article) {
+        Article existingArticle = articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Article not found with id: " + id));
+        
+        if (article.getNomArticle() != null) {
+            existingArticle.setNomArticle(article.getNomArticle());
+        }
+        if (article.getPrixArticle() != 0) {
+            existingArticle.setPrixArticle(article.getPrixArticle());
+        }
+        if (article.getTypeArticle() != null) {
+            existingArticle.setTypeArticle(article.getTypeArticle());
+        }
+        
+        return articleRepository.save(existingArticle);
+    }
 }
 

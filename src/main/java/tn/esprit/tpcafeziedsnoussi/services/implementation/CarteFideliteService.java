@@ -68,5 +68,20 @@ public class CarteFideliteService implements ICarteFideliteService {
     public boolean verifCarteFideliteById(Long id) {
         return carteFideliteRepository.existsById(id);
     }
+
+    @Override
+    public CarteFidelite patchCarteFideliteById(Long id, CarteFidelite carteFidelite) {
+        CarteFidelite existingCarte = carteFideliteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("CarteFidelite not found with id: " + id));
+        
+        if (carteFidelite.getPointsAccumules() != 0) {
+            existingCarte.setPointsAccumules(carteFidelite.getPointsAccumules());
+        }
+        if (carteFidelite.getDateCreation() != null) {
+            existingCarte.setDateCreation(carteFidelite.getDateCreation());
+        }
+        
+        return carteFideliteRepository.save(existingCarte);
+    }
 }
 

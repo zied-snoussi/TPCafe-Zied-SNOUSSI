@@ -68,5 +68,23 @@ public class CommandeService implements ICommandeService {
     public boolean verifCommandeById(Long id) {
         return commandeRepository.existsById(id);
     }
+
+    @Override
+    public Commande patchCommandeById(Long id, Commande commande) {
+        Commande existingCommande = commandeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Commande not found with id: " + id));
+        
+        if (commande.getDateCommande() != null) {
+            existingCommande.setDateCommande(commande.getDateCommande());
+        }
+        if (commande.getTotalCommande() != 0) {
+            existingCommande.setTotalCommande(commande.getTotalCommande());
+        }
+        if (commande.getStatusCommande() != null) {
+            existingCommande.setStatusCommande(commande.getStatusCommande());
+        }
+        
+        return commandeRepository.save(existingCommande);
+    }
 }
 

@@ -49,11 +49,23 @@ public class ClientService implements IClientService {
 
     @Override
     public Client updateClientById(Long id, Client client) {
-        if (!clientRepository.existsById(id)) {
-            throw new RuntimeException("Client not found with id: " + id);
+        Client existingClient = clientRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Client not found with id: " + id));
+        
+        // Update only non-null fields
+        if (client.getNom() != null) {
+            existingClient.setNom(client.getNom());
         }
-        client.setIdClient(id);
-        return clientRepository.save(client);
+        if (client.getPrenom() != null) {
+            existingClient.setPrenom(client.getPrenom());
+        }
+        if (client.getDateNaissance() != null) {
+            existingClient.setDateNaissance(client.getDateNaissance());
+        }
+        // Note: For nested objects (adresse, carteFidelite), we don't update them in PATCH
+        // to avoid accidental overwrites. Use dedicated endpoints for those.
+        
+        return clientRepository.save(existingClient);
     }
 
     @Override

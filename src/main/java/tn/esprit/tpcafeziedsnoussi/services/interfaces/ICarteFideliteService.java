@@ -10,6 +10,7 @@ public interface ICarteFideliteService {
     CarteFidelite selectCarteFideliteByIdWithOrElse(Long id);
     List<CarteFidelite> selectAllCartesFidelite();
     CarteFidelite updateCarteFidelite(CarteFidelite carteFidelite);
+    CarteFidelite patchCarteFideliteById(Long id, CarteFidelite carteFidelite);
     void deleteCarteFidelite(CarteFidelite carteFidelite);
     void deleteAllCartesFidelite();
     void deleteCarteFideliteById(Long id);

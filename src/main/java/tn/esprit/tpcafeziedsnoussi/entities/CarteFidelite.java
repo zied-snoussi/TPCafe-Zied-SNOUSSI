@@ -10,6 +10,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "carte_fidelite")
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString

@@ -71,4 +71,22 @@ public class AdressService implements IAdressService {
     public boolean verifAdressById(Long id) {
         return adresseRepository.existsById(id);
     }
+
+    @Override
+    public Adresse patchAdressById(Long id, Adresse adresse) {
+        Adresse existingAdresse = adresseRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found with id: " + id));
+        
+        if (adresse.getRue() != null) {
+            existingAdresse.setRue(adresse.getRue());
+        }
+        if (adresse.getVille() != null) {
+            existingAdresse.setVille(adresse.getVille());
+        }
+        if (adresse.getCodePostal() != null) {
+            existingAdresse.setCodePostal(adresse.getCodePostal());
+        }
+        
+        return adresseRepository.save(existingAdresse);
+    }
 }

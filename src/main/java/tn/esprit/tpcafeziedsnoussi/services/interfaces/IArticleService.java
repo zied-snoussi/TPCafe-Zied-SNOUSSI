@@ -10,6 +10,7 @@ public interface IArticleService {
     Article selectArticleByIdWithOrElse(Long id);
     List<Article> selectAllArticles();
     Article updateArticle(Article article);
+    Article patchArticleById(Long id, Article article);
     void deleteArticle(Article article);
     void deleteAllArticles();
     void deleteArticleById(Long id);

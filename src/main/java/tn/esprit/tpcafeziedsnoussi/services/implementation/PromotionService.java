@@ -68,5 +68,23 @@ public class PromotionService implements IPromotionService {
     public boolean verifPromotionById(Long id) {
         return promotionRepository.existsById(id);
     }
+
+    @Override
+    public Promotion patchPromotionById(Long id, Promotion promotion) {
+        Promotion existingPromotion = promotionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + id));
+        
+        if (promotion.getPourcentagePromo() != 0) {
+            existingPromotion.setPourcentagePromo(promotion.getPourcentagePromo());
+        }
+        if (promotion.getDateDebutPromo() != null) {
+            existingPromotion.setDateDebutPromo(promotion.getDateDebutPromo());
+        }
+        if (promotion.getDateFinPromo() != null) {
+            existingPromotion.setDateFinPromo(promotion.getDateFinPromo());
+        }
+        
+        return promotionRepository.save(existingPromotion);
+    }
 }
 

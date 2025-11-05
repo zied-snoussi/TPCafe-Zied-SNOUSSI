@@ -10,6 +10,7 @@ public interface IDetailCommandeService {
     Detail_Commande selectDetailCommandeByIdWithOrElse(Long id);
     List<Detail_Commande> selectAllDetailCommandes();
     Detail_Commande updateDetailCommande(Detail_Commande detailCommande);
+    Detail_Commande patchDetailCommandeById(Long id, Detail_Commande detailCommande);
     void deleteDetailCommande(Detail_Commande detailCommande);
     void deleteAllDetailCommandes();
     void deleteDetailCommandeById(Long id);
