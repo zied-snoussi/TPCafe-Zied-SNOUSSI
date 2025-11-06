@@ -1,8 +1,10 @@
 package tn.esprit.tpcafeziedsnoussi.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpcafeziedsnoussi.entities.CarteFidelite;
 
 import java.time.LocalDate;
@@ -66,6 +68,59 @@ public interface CarteFideliteRepository extends JpaRepository<CarteFidelite, Lo
     // Custom query to find top loyalty cards by points
     @Query("SELECT cf FROM CarteFidelite cf ORDER BY cf.pointsAccumules DESC")
     List<CarteFidelite> findTopLoyaltyCards();
+
+    // ==================== CUSTOM QUERIES ====================
+
+    // 1. Trouver les cartes avec un nombre exact de points
+    List<CarteFidelite> findByPointsAccumulesEquals(int points);
+
+    // 2. Trouver les cartes créées à une date spécifique
+    List<CarteFidelite> findByDateCreationEquals(LocalDate date);
+
+    // 3. Compter les cartes avec plus de X points
+    long countByPointsAccumulesGreaterThan(int points);
+
+    // 4. Supprimer les cartes créées avant une date
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM CarteFidelite cf WHERE cf.dateCreation < :date")
+    void deleteByDateCreationBefore(@Param("date") LocalDate date);
+
+    // 5. Trouver les cartes avec des points dans une plage, créées après une date
+    @Query("SELECT cf FROM CarteFidelite cf WHERE cf.pointsAccumules BETWEEN :minPoints AND :maxPoints AND cf.dateCreation > :date")
+    List<CarteFidelite> findByPointsInRangeAndCreatedAfter(@Param("minPoints") int minPoints, 
+                                                            @Param("maxPoints") int maxPoints, 
+                                                            @Param("date") LocalDate date);
+
+    // 6. Trouver les cartes avec au moins X points, triées par date de création
+    @Query("SELECT cf FROM CarteFidelite cf WHERE cf.pointsAccumules >= :minPoints ORDER BY cf.dateCreation ASC")
+    List<CarteFidelite> findByMinPointsOrderByDateCreation(@Param("minPoints") int minPoints);
+
+    // 7. Trouver les cartes créées entre deux dates
+    List<CarteFidelite> findByDateCreationBetweenOrderByDateCreationAsc(LocalDate startDate, LocalDate endDate);
+
+    // 8. Trouver les cartes avec peu de points OU créées avant une date
+    @Query("SELECT cf FROM CarteFidelite cf WHERE cf.pointsAccumules < :maxPoints OR cf.dateCreation < :date")
+    List<CarteFidelite> findByLowPointsOrCreatedBefore(@Param("maxPoints") int maxPoints, 
+                                                        @Param("date") LocalDate date);
+
+    // 9. Trouver la carte avec le plus de points
+    Optional<CarteFidelite> findTopByOrderByPointsAccumulesDesc();
+
+    // 10. Trouver les cartes sans date de création
+    List<CarteFidelite> findByDateCreationIsNull();
+
+    // 11. Trouver les cartes avec des points accumulés renseignés
+    @Query("SELECT cf FROM CarteFidelite cf WHERE cf.pointsAccumules IS NOT NULL")
+    List<CarteFidelite> findByPointsAccumulesIsNotNull();
+
+    // 12. Trouver les cartes avec leur client propriétaire (Par nom et prénom)
+    @Query("SELECT cf FROM CarteFidelite cf JOIN FETCH cf.client c WHERE c.nom = :nom AND c.prenom = :prenom")
+    List<CarteFidelite> findByClientNomAndPrenom(@Param("nom") String nom, 
+                                                  @Param("prenom") String prenom);
+
+    // 13. Trouver top 5 des cartes avec le plus de points
+    List<CarteFidelite> findTop5ByOrderByPointsAccumulesDesc();
 
 }
 
