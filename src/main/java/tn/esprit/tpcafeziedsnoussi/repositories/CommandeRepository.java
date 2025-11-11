@@ -1,8 +1,10 @@
 package tn.esprit.tpcafeziedsnoussi.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 import tn.esprit.tpcafeziedsnoussi.entities.Commande;
 import tn.esprit.tpcafeziedsnoussi.enums.StatusCommande;
 
@@ -12,78 +14,139 @@ import java.util.Optional;
 
 public interface CommandeRepository extends JpaRepository<Commande, Long> {
 
-    // Find orders by status
-    List<Commande> findByStatusCommande(StatusCommande statusCommande);
 
-    // Find orders NOT of a specific status
+    List<Commande> findByStatusCommande(StatusCommande statusCommande);
+    @Query("SELECT c FROM Commande c WHERE c.statusCommande = :statusCommande")
+    List<Commande> findByStatusCommandeJPQL(@Param("statusCommande") StatusCommande statusCommande);
+    @Query(value = "SELECT * FROM commande WHERE status_commande = :statusCommande", nativeQuery = true)
+    List<Commande> findByStatusCommandeNative(@Param("statusCommande") String statusCommande);
+
+    List<Commande> findByDateCommande(LocalDate dateCommande);
+    @Query("SELECT c FROM Commande c WHERE c.dateCommande = :dateCommande")
+    List<Commande> findByDateCommandeJPQL(@Param("dateCommande") LocalDate dateCommande);
+    @Query(value = "SELECT * FROM commande WHERE date_commande = :dateCommande", nativeQuery = true)
+    List<Commande> findByDateCommandeNative(@Param("dateCommande") LocalDate dateCommande);
+
+    long countByStatusCommande(StatusCommande statusCommande);
+    @Query("SELECT COUNT(c) FROM Commande c WHERE c.statusCommande = :statusCommande")
+    long countByStatusCommandeJPQL(@Param("statusCommande") StatusCommande statusCommande);
+    @Query(value = "SELECT COUNT(*) FROM commande WHERE status_commande = :statusCommande", nativeQuery = true)
+    long countByStatusCommandeNative(@Param("statusCommande") String statusCommande);
+
+    @Modifying
+    @Transactional
+    void deleteByDateCommandeBefore(LocalDate date);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Commande c WHERE c.dateCommande < :date")
+    void deleteByDateCommandeBeforeJPQL(@Param("date") LocalDate date);
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM commande WHERE date_commande < :date", nativeQuery = true)
+    void deleteByDateCommandeBeforeNative(@Param("date") LocalDate date);
+
+    List<Commande> findByStatusCommandeAndDateCommandeBetween(StatusCommande statusCommande, LocalDate startDate, LocalDate endDate);
+    @Query("SELECT c FROM Commande c WHERE c.statusCommande = :status AND c.dateCommande BETWEEN :startDate AND :endDate")
+    List<Commande> findByStatusAndDateRangeJPQL(@Param("status") StatusCommande status, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+    @Query(value = "SELECT * FROM commande WHERE status_commande = :status AND date_commande BETWEEN :startDate AND :endDate", nativeQuery = true)
+    List<Commande> findByStatusAndDateRangeNative(@Param("status") String status, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    List<Commande> findByTotalCommandeGreaterThanAndStatusCommandeNot(float total, StatusCommande statusCommande);
+    @Query("SELECT c FROM Commande c WHERE c.totalCommande > :total AND c.statusCommande <> :status")
+    List<Commande> findByTotalGreaterThanAndStatusNotJPQL(@Param("total") float total, @Param("status") StatusCommande status);
+    @Query(value = "SELECT * FROM commande WHERE total_commande > :total AND status_commande <> :status", nativeQuery = true)
+    List<Commande> findByTotalGreaterThanAndStatusNotNative(@Param("total") float total, @Param("status") String status);
+
+    List<Commande> findByStatusCommandeInOrderByDateCommandeAsc(List<StatusCommande> statuses);
+    @Query("SELECT c FROM Commande c WHERE c.statusCommande IN :statuses ORDER BY c.dateCommande ASC")
+    List<Commande> findByStatusInOrderByDateJPQL(@Param("statuses") List<StatusCommande> statuses);
+    @Query(value = "SELECT * FROM commande WHERE status_commande IN :statuses ORDER BY date_commande ASC", nativeQuery = true)
+    List<Commande> findByStatusInOrderByDateNative(@Param("statuses") List<String> statuses);
+
+    List<Commande> findByDateCommandeBeforeAndTotalCommandeBetween(LocalDate date, float minTotal, float maxTotal);
+    @Query("SELECT c FROM Commande c WHERE c.dateCommande < :date AND c.totalCommande BETWEEN :minTotal AND :maxTotal")
+    List<Commande> findByDateBeforeAndTotalBetweenJPQL(@Param("date") LocalDate date, @Param("minTotal") float minTotal, @Param("maxTotal") float maxTotal);
+    @Query(value = "SELECT * FROM commande WHERE date_commande < :date AND total_commande BETWEEN :minTotal AND :maxTotal", nativeQuery = true)
+    List<Commande> findByDateBeforeAndTotalBetweenNative(@Param("date") LocalDate date, @Param("minTotal") float minTotal, @Param("maxTotal") float maxTotal);
+
+    @Query("SELECT c FROM Commande c WHERE CAST(c.statusCommande AS string) LIKE CONCAT('%', :suffix)")
+    List<Commande> findByStatusEndingWithJPQL(@Param("suffix") String suffix);
+    @Query(value = "SELECT * FROM commande WHERE status_commande LIKE CONCAT('%', :suffix)", nativeQuery = true)
+    List<Commande> findByStatusEndingWithNative(@Param("suffix") String suffix);
+
+    List<Commande> findByStatusCommandeIsNull();
+    @Query("SELECT c FROM Commande c WHERE c.statusCommande IS NULL")
+    List<Commande> findByStatusCommandeIsNullJPQL();
+    @Query(value = "SELECT * FROM commande WHERE status_commande IS NULL", nativeQuery = true)
+    List<Commande> findByStatusCommandeIsNullNative();
+
+    List<Commande> findByTotalCommandeIsNotNull();
+    @Query("SELECT c FROM Commande c WHERE c.totalCommande IS NOT NULL")
+    List<Commande> findByTotalCommandeIsNotNullJPQL();
+    @Query(value = "SELECT * FROM commande WHERE total_commande IS NOT NULL", nativeQuery = true)
+    List<Commande> findByTotalCommandeIsNotNullNative();
+
+    @Query("SELECT DISTINCT c FROM Commande c LEFT JOIN FETCH c.detailCommandes LEFT JOIN FETCH c.client")
+    List<Commande> findAllWithDetailsAndClientJPQL();
+    @Query(value = "SELECT DISTINCT c.* FROM commande c " +
+           "LEFT JOIN detail_commande dc ON c.id_commande = dc.id_commande " +
+           "LEFT JOIN client cl ON c.id_client = cl.id_client", nativeQuery = true)
+    List<Commande> findAllWithDetailsAndClientNative();
+
+    List<Commande> findTop3ByOrderByDateCommandeDesc();
+    @Query("SELECT c FROM Commande c ORDER BY c.dateCommande DESC")
+    List<Commande> findTop3RecentCommandesJPQL();
+    @Query(value = "SELECT * FROM commande ORDER BY date_commande DESC LIMIT 3", nativeQuery = true)
+    List<Commande> findTop3RecentCommandesNative();
+
+
     @Query("SELECT c FROM Commande c WHERE c.statusCommande <> :status")
     List<Commande> findByStatusCommandeNot(@Param("status") StatusCommande status);
 
-    // Find orders by date
-    List<Commande> findByDateCommande(LocalDate dateCommande);
-
-    // Find orders NOT on a specific date
     @Query("SELECT c FROM Commande c WHERE c.dateCommande <> :date")
     List<Commande> findByDateCommandeNot(@Param("date") LocalDate date);
 
-    // Find orders after a specific date
     List<Commande> findByDateCommandeAfter(LocalDate date);
 
-    // Find orders before a specific date
     List<Commande> findByDateCommandeBefore(LocalDate date);
 
-    // Find orders between dates
     List<Commande> findByDateCommandeBetween(LocalDate startDate, LocalDate endDate);
 
-    // Find orders NOT between dates
     @Query("SELECT c FROM Commande c WHERE c.dateCommande NOT BETWEEN :startDate AND :endDate")
     List<Commande> findByDateCommandeNotBetween(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // Find orders by total
     List<Commande> findByTotalCommande(float totalCommande);
 
-    // Find orders with total NOT equal
     @Query("SELECT c FROM Commande c WHERE c.totalCommande <> :total")
     List<Commande> findByTotalCommandeNot(@Param("total") float total);
 
-    // Find orders with total greater than
     List<Commande> findByTotalCommandeGreaterThan(float total);
 
-    // Find orders with total less than
     List<Commande> findByTotalCommandeLessThan(float total);
 
-    // Find orders with total between range
     List<Commande> findByTotalCommandeBetween(float minTotal, float maxTotal);
 
-    // Find orders with total NOT between range
     @Query("SELECT c FROM Commande c WHERE c.totalCommande NOT BETWEEN :minTotal AND :maxTotal")
     List<Commande> findByTotalCommandeNotBetween(@Param("minTotal") float minTotal, @Param("maxTotal") float maxTotal);
 
-    // Custom query to find orders by client ID
     @Query("SELECT c FROM Commande c WHERE c.client.idClient = :clientId")
     List<Commande> findByClientId(@Param("clientId") Long clientId);
 
-    // Custom query to find orders by client name
     @Query("SELECT c FROM Commande c WHERE c.client.nom = :nom")
     List<Commande> findByClientNom(@Param("nom") String nom);
 
-    // Custom query to find orders by client name containing (ignore case)
     @Query("SELECT c FROM Commande c WHERE LOWER(c.client.nom) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Commande> findByClientNomContaining(@Param("keyword") String keyword);
 
-    // Custom query to find orders by client name starting with
     @Query("SELECT c FROM Commande c WHERE LOWER(c.client.nom) LIKE LOWER(CONCAT(:prefix, '%'))")
     List<Commande> findByClientNomStartingWith(@Param("prefix") String prefix);
 
-    // Custom query to find orders by client name NOT containing
     @Query("SELECT c FROM Commande c WHERE LOWER(c.client.nom) NOT LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Commande> findByClientNomNotContaining(@Param("keyword") String keyword);
 
-    // Custom query to find orders by status and date range
     @Query("SELECT c FROM Commande c WHERE c.statusCommande = :status AND c.dateCommande BETWEEN :startDate AND :endDate")
     List<Commande> findByStatusAndDateRange(@Param("status") StatusCommande status, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // Custom query to calculate total revenue by date range
     @Query("SELECT SUM(c.totalCommande) FROM Commande c WHERE c.dateCommande BETWEEN :startDate AND :endDate")
     Float calculateTotalRevenue(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
