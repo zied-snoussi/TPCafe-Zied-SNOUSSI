@@ -1,33 +1,16 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import tn.esprit.tpcafeziedsnoussi.dtos.DetailCommandeDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.Detail_Commande;
 
-@Component
-public class DetailCommandeMapper {
+@Mapper(componentModel = "spring", uses = {ArticleMapper.class})
+public interface DetailCommandeMapper {
 
-    public DetailCommandeDTO toDTO(Detail_Commande detailCommande) {
-        if (detailCommande == null) return null;
-        
-        return DetailCommandeDTO.builder()
-                .idDetailCommande(detailCommande.getIdDetailCommande())
-                .quantiteArticle(detailCommande.getQuantiteArticle())
-                .sousTotalDetailArticle(detailCommande.getSousTotalDetailArticle())
-                .sousTotalDetailArticleApresPromo(detailCommande.getSousTotalDetailArticleApresPromo())
-                .commandeId(detailCommande.getCommande() != null ? detailCommande.getCommande().getIdCommande() : null)
-                .articleId(detailCommande.getArticle() != null ? detailCommande.getArticle().getIdArticle() : null)
-                .build();
-    }
+    @Mapping(source = "commande.idCommande", target = "commandeId")
+    @Mapping(source = "article.idArticle", target = "articleId")
+    DetailCommandeDTO toDTO(Detail_Commande detailCommande);
 
-    public Detail_Commande toEntity(DetailCommandeDTO dto) {
-        if (dto == null) return null;
-        
-        return Detail_Commande.builder()
-                .idDetailCommande(dto.getIdDetailCommande())
-                .quantiteArticle(dto.getQuantiteArticle())
-                .sousTotalDetailArticle(dto.getSousTotalDetailArticle())
-                .sousTotalDetailArticleApresPromo(dto.getSousTotalDetailArticleApresPromo())
-                .build();
-    }
+    Detail_Commande toEntity(DetailCommandeDTO dto);
 }

@@ -1,37 +1,26 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import tn.esprit.tpcafeziedsnoussi.dtos.PromotionDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.Promotion;
 
 import java.util.stream.Collectors;
 
-@Component
-public class PromotionMapper {
+@Mapper(componentModel = "spring")
+public interface PromotionMapper {
 
-    public PromotionDTO toDTO(Promotion promotion) {
-        if (promotion == null) return null;
-        
-        return PromotionDTO.builder()
-                .idPromotion(promotion.getIdPromotion())
-                .pourcentagePromo(promotion.getPourcentagePromo())
-                .dateDebutPromo(promotion.getDateDebutPromo())
-                .dateFinPromo(promotion.getDateFinPromo())
-                .articleIds(promotion.getArticles() != null ? 
-                    promotion.getArticles().stream()
-                        .map(article -> article.getIdArticle())
-                        .collect(Collectors.toList()) : null)
-                .build();
-    }
+    @Mapping(target = "articleIds", expression = "java(mapArticlesToIds(promotion.getArticles()))")
+    PromotionDTO toDTO(Promotion promotion);
 
-    public Promotion toEntity(PromotionDTO dto) {
-        if (dto == null) return null;
-        
-        return Promotion.builder()
-                .idPromotion(dto.getIdPromotion())
-                .pourcentagePromo(dto.getPourcentagePromo())
-                .dateDebutPromo(dto.getDateDebutPromo())
-                .dateFinPromo(dto.getDateFinPromo())
-                .build();
+    Promotion toEntity(PromotionDTO dto);
+
+    default java.util.List<Long> mapArticlesToIds(java.util.List<tn.esprit.tpcafeziedsnoussi.entities.Article> articles) {
+        if (articles == null) {
+            return null;
+        }
+        return articles.stream()
+                .map(tn.esprit.tpcafeziedsnoussi.entities.Article::getIdArticle)
+                .collect(java.util.stream.Collectors.toList());
     }
 }

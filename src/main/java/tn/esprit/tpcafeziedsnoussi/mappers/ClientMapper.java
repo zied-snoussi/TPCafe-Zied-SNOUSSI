@@ -1,33 +1,25 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 import tn.esprit.tpcafeziedsnoussi.dtos.ClientDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.Client;
 
-@Component
-public class ClientMapper {
+@Mapper(componentModel = "spring", uses = {AdresseMapper.class, CarteFideliteMapper.class})
+public interface ClientMapper {
 
-    public ClientDTO toDTO(Client client) {
-        if (client == null) return null;
-        
-        return ClientDTO.builder()
-                .idClient(client.getIdClient())
-                .nom(client.getNom())
-                .prenom(client.getPrenom())
-                .dateNaissance(client.getDateNaissance())
-                .adresseId(client.getAdresse() != null ? client.getAdresse().getIdAdresse() : null)
-                .carteFideliteId(client.getCarteFidelite() != null ? client.getCarteFidelite().getIdCarteFidelite() : null)
-                .build();
-    }
+    @Mapping(source = "adresse.idAdresse", target = "adresseId")
+    @Mapping(source = "carteFidelite.idCarteFidelite", target = "carteFideliteId")
+    ClientDTO toDTO(Client client);
 
-    public Client toEntity(ClientDTO dto) {
-        if (dto == null) return null;
-        
-        return Client.builder()
-                .idClient(dto.getIdClient())
-                .nom(dto.getNom())
-                .prenom(dto.getPrenom())
-                .dateNaissance(dto.getDateNaissance())
-                .build();
+    Client toEntity(ClientDTO dto);
+
+    @AfterMapping
+    default void linkChildren(@MappingTarget Client client) {
+        if (client.getAdresse() != null) {
+            client.getAdresse().setClient(client);
+        }
+        if (client.getCarteFidelite() != null) {
+            client.getCarteFidelite().setClient(client);
+        }
     }
 }

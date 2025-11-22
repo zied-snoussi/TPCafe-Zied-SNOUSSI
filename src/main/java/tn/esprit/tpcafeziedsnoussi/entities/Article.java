@@ -50,7 +50,7 @@ public class Article {
     @Builder.Default
     List<Detail_Commande> detailCommandes = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
         name = "article_promotion",
         joinColumns = @JoinColumn(name = "id_article"),

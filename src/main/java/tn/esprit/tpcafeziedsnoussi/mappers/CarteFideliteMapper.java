@@ -1,30 +1,15 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import tn.esprit.tpcafeziedsnoussi.dtos.CarteFideliteDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.CarteFidelite;
 
-@Component
-public class CarteFideliteMapper {
+@Mapper(componentModel = "spring")
+public interface CarteFideliteMapper {
 
-    public CarteFideliteDTO toDTO(CarteFidelite carteFidelite) {
-        if (carteFidelite == null) return null;
-        
-        return CarteFideliteDTO.builder()
-                .idCarteFidelite(carteFidelite.getIdCarteFidelite())
-                .pointsAccumules(carteFidelite.getPointsAccumules())
-                .dateCreation(carteFidelite.getDateCreation())
-                .clientId(carteFidelite.getClient() != null ? carteFidelite.getClient().getIdClient() : null)
-                .build();
-    }
+    @Mapping(source = "client.idClient", target = "clientId")
+    CarteFideliteDTO toDTO(CarteFidelite carteFidelite);
 
-    public CarteFidelite toEntity(CarteFideliteDTO dto) {
-        if (dto == null) return null;
-        
-        return CarteFidelite.builder()
-                .idCarteFidelite(dto.getIdCarteFidelite())
-                .pointsAccumules(dto.getPointsAccumules())
-                .dateCreation(dto.getDateCreation())
-                .build();
-    }
+    CarteFidelite toEntity(CarteFideliteDTO dto);
 }

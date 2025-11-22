@@ -12,4 +12,5 @@ public class ArticleDTO {
     private String nomArticle;
     private float prixArticle;
     private TypeArticle typeArticle;
+    private java.util.List<PromotionDTO> promotions;
 }

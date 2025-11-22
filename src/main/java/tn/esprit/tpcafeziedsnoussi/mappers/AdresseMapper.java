@@ -1,32 +1,15 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import tn.esprit.tpcafeziedsnoussi.dtos.AdresseDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
 
-@Component
-public class AdresseMapper {
+@Mapper(componentModel = "spring")
+public interface AdresseMapper {
 
-    public AdresseDTO toDTO(Adresse adresse) {
-        if (adresse == null) return null;
-        
-        return AdresseDTO.builder()
-                .idAdresse(adresse.getIdAdresse())
-                .rue(adresse.getRue())
-                .ville(adresse.getVille())
-                .codePostal(adresse.getCodePostal())
-                .clientId(adresse.getClient() != null ? adresse.getClient().getIdClient() : null)
-                .build();
-    }
+    @Mapping(source = "client.idClient", target = "clientId")
+    AdresseDTO toDTO(Adresse adresse);
 
-    public Adresse toEntity(AdresseDTO dto) {
-        if (dto == null) return null;
-        
-        return Adresse.builder()
-                .idAdresse(dto.getIdAdresse())
-                .rue(dto.getRue())
-                .ville(dto.getVille())
-                .codePostal(dto.getCodePostal())
-                .build();
-    }
+    Adresse toEntity(AdresseDTO dto);
 }

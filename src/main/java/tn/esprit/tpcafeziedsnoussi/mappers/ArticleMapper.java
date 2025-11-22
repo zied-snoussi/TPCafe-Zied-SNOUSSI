@@ -1,31 +1,13 @@
 package tn.esprit.tpcafeziedsnoussi.mappers;
 
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
 import tn.esprit.tpcafeziedsnoussi.dtos.ArticleDTO;
 import tn.esprit.tpcafeziedsnoussi.entities.Article;
 
-@Component
-public class ArticleMapper {
+@Mapper(componentModel = "spring", uses = {PromotionMapper.class})
+public interface ArticleMapper {
 
-    public ArticleDTO toDTO(Article article) {
-        if (article == null) return null;
-        
-        return ArticleDTO.builder()
-                .idArticle(article.getIdArticle())
-                .nomArticle(article.getNomArticle())
-                .prixArticle(article.getPrixArticle())
-                .typeArticle(article.getTypeArticle())
-                .build();
-    }
+    ArticleDTO toDTO(Article article);
 
-    public Article toEntity(ArticleDTO dto) {
-        if (dto == null) return null;
-        
-        return Article.builder()
-                .idArticle(dto.getIdArticle())
-                .nomArticle(dto.getNomArticle())
-                .prixArticle(dto.getPrixArticle())
-                .typeArticle(dto.getTypeArticle())
-                .build();
-    }
+    Article toEntity(ArticleDTO dto);
 }

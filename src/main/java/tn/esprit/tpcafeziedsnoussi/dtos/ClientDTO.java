@@ -15,4 +15,6 @@ public class ClientDTO {
     private LocalDate dateNaissance;
     private Long adresseId;
     private Long carteFideliteId;
+    private AdresseDTO adresse;
+    private CarteFideliteDTO carteFidelite;
 }

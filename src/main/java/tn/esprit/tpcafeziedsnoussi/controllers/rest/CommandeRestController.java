@@ -137,4 +137,29 @@ public class CommandeRestController {
         commandeService.deleteAllCommandes();
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{idCommande}/client/{idClient}")
+    @Operation(summary = "Assign order to client", description = "Assigns an order to a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order assigned to client successfully"),
+            @ApiResponse(responseCode = "404", description = "Order or Client not found", content = @Content)
+    })
+    public ResponseEntity<Void> affecterCommandeToClient(
+            @Parameter(description = "ID of the order", required = true) @PathVariable Long idCommande,
+            @Parameter(description = "ID of the client", required = true) @PathVariable Long idClient) {
+        commandeService.affecterCommandeToClient(idCommande, idClient);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{idCommande}/client")
+    @Operation(summary = "Unassign client from order", description = "Removes the client assignment from an order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client unassigned from order successfully"),
+            @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
+    })
+    public ResponseEntity<Void> desaffecterClientdeCommande(
+            @Parameter(description = "ID of the order", required = true) @PathVariable Long idCommande) {
+        commandeService.desaffecterClientdeCommande(idCommande);
+        return ResponseEntity.ok().build();
+    }
 }

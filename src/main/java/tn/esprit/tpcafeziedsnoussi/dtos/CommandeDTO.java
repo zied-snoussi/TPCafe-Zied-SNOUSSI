@@ -17,4 +17,5 @@ public class CommandeDTO {
     private StatusCommande statusCommande;
     private Long clientId;
     private List<Long> detailCommandeIds;
+    private List<DetailCommandeDTO> details;
 }
