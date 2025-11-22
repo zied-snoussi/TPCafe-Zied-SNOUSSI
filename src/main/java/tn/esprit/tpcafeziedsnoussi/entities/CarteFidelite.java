@@ -18,7 +18,6 @@ import java.time.LocalDate;
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class CarteFidelite {
 
     @Id
@@ -34,7 +33,6 @@ public class CarteFidelite {
     @NotNull(message = "Creation date is required")
     LocalDate dateCreation;
 
-    // inverse side of one-to-one with Client
     @OneToOne(mappedBy = "carteFidelite")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

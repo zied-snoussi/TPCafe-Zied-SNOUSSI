@@ -22,7 +22,6 @@ import java.util.List;
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class Article {
 
     @Id
@@ -44,7 +43,6 @@ public class Article {
     @NotNull(message = "Article type is required")
     TypeArticle typeArticle;
 
-    // One Article can be referenced by many Detail_Commande
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -52,8 +50,7 @@ public class Article {
     @Builder.Default
     List<Detail_Commande> detailCommandes = new ArrayList<>();
 
-    // Many-to-many between Article and Promotion
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "article_promotion",
         joinColumns = @JoinColumn(name = "id_article"),

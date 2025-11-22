@@ -2,8 +2,10 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.tpcafeziedsnoussi.entities.Client;
 import tn.esprit.tpcafeziedsnoussi.entities.Commande;
 import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
+import tn.esprit.tpcafeziedsnoussi.repositories.ClientRepository;
 import tn.esprit.tpcafeziedsnoussi.repositories.CommandeRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.ICommandeService;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class CommandeService implements ICommandeService {
 
     private final CommandeRepository commandeRepository;
+    private final ClientRepository clientRepository;
 
     @Override
     public Commande addCommande(Commande commande) {
@@ -84,5 +87,25 @@ public class CommandeService implements ICommandeService {
         
         return commandeRepository.save(existingCommande);
     }
+
+    @Override
+    public void affecterCommandeToClient(long idCommande, long idClient) {
+        Commande commande = commandeRepository.findById(idCommande)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande", "id", idCommande));
+
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", idClient));
+        commande.setClient(client);
+        commandeRepository.save(commande);
+    }
+
+    @Override
+    public void desaffecterClientdeCommande(Long idCommande) {
+        Commande commande = commandeRepository.findById(idCommande)
+                .orElseThrow(() -> new ResourceNotFoundException("Commande", "id", idCommande));
+        commande.setClient(null);
+        commandeRepository.save(commande);
+    }
+
 }
 

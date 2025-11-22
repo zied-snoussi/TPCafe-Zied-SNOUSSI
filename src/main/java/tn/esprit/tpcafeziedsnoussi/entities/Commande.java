@@ -21,7 +21,6 @@ import java.util.List;
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class Commande {
 
     @Id
@@ -42,14 +41,12 @@ public class Commande {
     @NotNull(message = "Order status is required")
     StatusCommande statusCommande;
 
-    // Relation to Client (many commandes can belong to one client)
     @ManyToOne
     @JoinColumn(name = "id_client", referencedColumnName = "id_client")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     Client client;
 
-    // One commande has many detail_commande
     @OneToMany(mappedBy = "commande", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

@@ -139,4 +139,30 @@ public class ArticleRestController {
         articleService.deleteAllArticles();
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{idArticle}/promotions/{idPromo}")
+    @Operation(summary = "Assign promotion to article", description = "Assigns a promotion to an article")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Promotion assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "Article or Promotion not found", content = @Content)
+    })
+    public ResponseEntity<Void> affecterPromotionAArticle(
+            @Parameter(description = "ID of the article", required = true) @PathVariable Long idArticle,
+            @Parameter(description = "ID of the promotion", required = true) @PathVariable Long idPromo) {
+        articleService.affecterPromotionAArticle(idArticle, idPromo);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{idArticle}/promotions/{idPromo}")
+    @Operation(summary = "Remove promotion from article", description = "Removes a promotion from an article")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Promotion removed successfully"),
+            @ApiResponse(responseCode = "404", description = "Article or Promotion not found", content = @Content)
+    })
+    public ResponseEntity<Void> desaffecterPromotionAArticle(
+            @Parameter(description = "ID of the article", required = true) @PathVariable Long idArticle,
+            @Parameter(description = "ID of the promotion", required = true) @PathVariable Long idPromo) {
+        articleService.desaffecterPromotionAArticle(idArticle, idPromo);
+        return ResponseEntity.ok().build();
+    }
 }

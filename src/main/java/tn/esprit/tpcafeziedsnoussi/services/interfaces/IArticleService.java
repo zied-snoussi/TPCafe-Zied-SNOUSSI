@@ -15,4 +15,6 @@ public interface IArticleService {
     void deleteAllArticles();
     void deleteArticleById(Long id);
     boolean verifArticleById(Long id);
+    void affecterPromotionAArticle(Long idArticle, Long idPromo);
+    void desaffecterPromotionAArticle(Long idArticle, Long idPromo);
 }

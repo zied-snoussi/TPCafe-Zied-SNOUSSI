@@ -1,8 +1,5 @@
 package tn.esprit.tpcafeziedsnoussi.exceptions;
 
-/**
- * Exception thrown when attempting to create a resource that already exists
- */
 public class DuplicateResourceException extends RuntimeException {
     
     private final String resourceName;

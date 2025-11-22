@@ -128,7 +128,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query(value = "SELECT c.* FROM client c INNER JOIN carte_fidelite cf ON c.id_carte_fidelite = cf.id_carte_fidelite WHERE cf.points_accumules BETWEEN :minPoints AND :maxPoints", nativeQuery = true)
     List<Client> findByPointsAccumulesBetweenNative(@Param("minPoints") int minPoints, @Param("maxPoints") int maxPoints);
 
-    @Query("SELECT DISTINCT c FROM Client c JOIN c.commandes cmd JOIN cmd.detailsCommande dc JOIN dc.article a WHERE a.nomArticle = :nomArticle")
+    @Query("SELECT DISTINCT c FROM Client c JOIN c.commandes cmd JOIN cmd.detailCommandes dc JOIN dc.article a WHERE a.nomArticle = :nomArticle")
     List<Client> findByArticleCommandeJPQL(@Param("nomArticle") String nomArticle);
     @Query(value = "SELECT DISTINCT c.* FROM client c " +
            "INNER JOIN commande cmd ON c.id_client = cmd.id_client " +
@@ -137,7 +137,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
            "WHERE a.nom_article = :nomArticle", nativeQuery = true)
     List<Client> findByArticleCommandeNative(@Param("nomArticle") String nomArticle);
 
-    @Query("SELECT DISTINCT c FROM Client c JOIN c.commandes cmd JOIN cmd.detailsCommande dc JOIN dc.article a " +
+    @Query("SELECT DISTINCT c FROM Client c JOIN c.commandes cmd JOIN cmd.detailCommandes dc JOIN dc.article a " +
            "WHERE LOWER(c.nom) LIKE LOWER(CONCAT('%', :nomKeyword, '%')) AND a.typeArticle = :typeArticle")
     List<Client> findByNomContainingAndArticleTypeJPQL(@Param("nomKeyword") String nomKeyword, @Param("typeArticle") TypeArticle typeArticle);
     @Query(value = "SELECT DISTINCT c.* FROM client c " +
@@ -177,4 +177,3 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findByPointsAccumulesNot(@Param("points") int points);
 
 }
-

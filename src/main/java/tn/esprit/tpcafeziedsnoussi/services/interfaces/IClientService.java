@@ -1,5 +1,6 @@
 package tn.esprit.tpcafeziedsnoussi.services.interfaces;
 
+import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
 import tn.esprit.tpcafeziedsnoussi.entities.Client;
 
 import java.util.List;
@@ -15,4 +16,7 @@ public interface IClientService {
     void deleteClientById(Long id);
     boolean verifClientById(Long id);
     Client updateClientById(Long id, Client client);
+    Client addClinetWithAddress(Client client, Adresse adresse);
+    String affecterAdresseAClient(Long idAdresse, Long idClient);
+    void affecterCarteAClient(Long idCarte, Long idClient);
 }

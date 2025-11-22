@@ -10,9 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Standardized error response DTO for all API errors
- */
 @Data
 @Builder
 @NoArgsConstructor

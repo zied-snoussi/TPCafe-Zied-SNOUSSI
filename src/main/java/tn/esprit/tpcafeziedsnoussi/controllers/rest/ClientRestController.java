@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpcafeziedsnoussi.dtos.ClientDTO;
+import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
+import tn.esprit.tpcafeziedsnoussi.entities.Client;
 import tn.esprit.tpcafeziedsnoussi.mappers.ClientMapper;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 
@@ -133,4 +135,30 @@ public class ClientRestController {
         var updatedClient = clientService.updateClientById(id, client);
         return ResponseEntity.ok(clientMapper.toDTO(updatedClient));
     }
+
+    @PutMapping("/{idClient}/adresse/{idAdresse}")
+    @Operation(summary = "Assign address to client", description = "Assigns an existing address to a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Address assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "Client or Address not found", content = @Content)
+    })
+    public ResponseEntity<String> affecterAdresseAClient(
+            @Parameter(description = "ID of the client", required = true) @PathVariable Long idClient,
+            @Parameter(description = "ID of the address", required = true) @PathVariable Long idAdresse) {
+        return ResponseEntity.ok(clientService.affecterAdresseAClient(idAdresse, idClient));
+    }
+
+    @PutMapping("/{idClient}/carte/{idCarte}")
+    @Operation(summary = "Assign loyalty card to client", description = "Assigns an existing loyalty card to a client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Loyalty card assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "Client or Card not found", content = @Content)
+    })
+    public ResponseEntity<Void> affecterCarteAClient(
+            @Parameter(description = "ID of the client", required = true) @PathVariable Long idClient,
+            @Parameter(description = "ID of the card", required = true) @PathVariable Long idCarte) {
+        clientService.affecterCarteAClient(idCarte, idClient);
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -1,8 +1,5 @@
 package tn.esprit.tpcafeziedsnoussi.exceptions;
 
-/**
- * Exception thrown when a requested resource is not found in the database
- */
 public class ResourceNotFoundException extends RuntimeException {
     
     private final String resourceName;

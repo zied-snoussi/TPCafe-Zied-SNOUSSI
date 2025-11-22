@@ -15,4 +15,6 @@ public interface ICommandeService {
     void deleteAllCommandes();
     void deleteCommandeById(Long id);
     boolean verifCommandeById(Long id);
+    void affecterCommandeToClient(long idCommande, long idClient);
+    void desaffecterClientdeCommande(Long idCommande);
 }

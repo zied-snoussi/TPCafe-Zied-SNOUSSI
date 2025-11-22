@@ -2,8 +2,12 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
+import tn.esprit.tpcafeziedsnoussi.entities.CarteFidelite;
 import tn.esprit.tpcafeziedsnoussi.entities.Client;
 import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
+import tn.esprit.tpcafeziedsnoussi.repositories.AdresseRepository;
+import tn.esprit.tpcafeziedsnoussi.repositories.CarteFideliteRepository;
 import tn.esprit.tpcafeziedsnoussi.repositories.ClientRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 
@@ -14,6 +18,8 @@ import java.util.List;
 public class ClientService implements IClientService {
 
     private final ClientRepository clientRepository;
+    private final AdresseRepository adresseRepository;
+    private final CarteFideliteRepository carteFideliteRepository;
 
     @Override
     public Client addClient(Client client) {
@@ -49,7 +55,6 @@ public class ClientService implements IClientService {
         Client existingClient = clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Client", "id", id));
         
-        // Update only non-null fields
         if (client.getNom() != null) {
             existingClient.setNom(client.getNom());
         }
@@ -59,10 +64,14 @@ public class ClientService implements IClientService {
         if (client.getDateNaissance() != null) {
             existingClient.setDateNaissance(client.getDateNaissance());
         }
-        // Note: For nested objects (adresse, carteFidelite), we don't update them in PATCH
-        // to avoid accidental overwrites. Use dedicated endpoints for those.
-        
+
         return clientRepository.save(existingClient);
+    }
+
+    @Override
+    public Client addClinetWithAddress(Client client, Adresse adresse) {
+        client.setAdresse(adresse);
+        return clientRepository.save(client);
     }
 
     @Override
@@ -87,5 +96,28 @@ public class ClientService implements IClientService {
     public boolean verifClientById(Long id) {
         return clientRepository.existsById(id);
     }
+
+    @Override
+    public String affecterAdresseAClient(Long idAdresse, Long idClient) {
+        Adresse adresse = adresseRepository.findById(idAdresse)
+                .orElseThrow(() -> new ResourceNotFoundException("Adresse", "id", idAdresse));
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", idClient));
+        client.setAdresse(adresse);
+        clientRepository.save(client);
+        return "L'affectation de " + client.getNom() + " " + client.getPrenom() + " à l'adresse "
+                + adresse.getVille() + " " + adresse.getRue() + " a été effectuée avec succés ! ";
+    }
+
+    @Override
+    public void affecterCarteAClient(Long idCarte, Long idClient) {
+        CarteFidelite carteFidelite = carteFideliteRepository.findById(idCarte)
+                .orElseThrow(() -> new ResourceNotFoundException("CarteFidelite", "id", idCarte));
+        Client client = clientRepository.findById(idClient)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", idClient));
+        client.setCarteFidelite(carteFidelite);
+        clientRepository.save(client);
+    }
+
 }
 

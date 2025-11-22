@@ -21,7 +21,6 @@ import java.util.List;
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class Client {
 
     @Id

@@ -2,8 +2,10 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tn.esprit.tpcafeziedsnoussi.entities.Article;
 import tn.esprit.tpcafeziedsnoussi.entities.Promotion;
 import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
+import tn.esprit.tpcafeziedsnoussi.repositories.ArticleRepository;
 import tn.esprit.tpcafeziedsnoussi.repositories.PromotionRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IPromotionService;
 
@@ -14,6 +16,7 @@ import java.util.List;
 public class PromotionService implements IPromotionService {
 
     private final PromotionRepository promotionRepository;
+    private final ArticleRepository articleRepository;
 
     @Override
     public Promotion addPromotion(Promotion promotion) {
@@ -83,6 +86,21 @@ public class PromotionService implements IPromotionService {
         }
         
         return promotionRepository.save(existingPromotion);
+    }
+
+    @Override
+    public void affcterPromotionAArticle(long idArticle, long idPromotion) {
+
+    }
+
+    @Override
+    public void desaffecterPromotionDeArticle(long idArticle, long idPromotion) {
+        Article article = articleRepository.findById(idArticle)
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", idArticle));
+        Promotion promotion = promotionRepository.findById(idPromotion)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion", "id", idPromotion));
+
+        articleRepository.save(article);
     }
 }
 

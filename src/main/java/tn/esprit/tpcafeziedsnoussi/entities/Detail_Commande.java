@@ -35,7 +35,6 @@ public class Detail_Commande {
     @PositiveOrZero(message = "Subtotal after promotion must be zero or positive")
     float sousTotalDetailArticleApresPromo;
 
-    // Many Detail_Commande belong to one Commande
     @ManyToOne
     @JoinColumn(name = "id_commande", referencedColumnName = "id_commande")
     @ToString.Exclude
@@ -43,7 +42,6 @@ public class Detail_Commande {
     @NotNull(message = "Order is required")
     Commande commande;
 
-    // Many Detail_Commande refer to one Article
     @ManyToOne
     @JoinColumn(name = "id_article", referencedColumnName = "id_article")
     @ToString.Exclude

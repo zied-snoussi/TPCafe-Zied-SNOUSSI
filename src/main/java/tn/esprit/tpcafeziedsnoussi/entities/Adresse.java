@@ -17,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-//@RequiredArgsConstructor
 public class Adresse {
 
     @Id
@@ -40,7 +39,6 @@ public class Adresse {
     @Pattern(regexp = "^\\d{4}$", message = "Postal code must be 4 digits")
     String codePostal;
 
-    // inverse side of one-to-one with Client
     @OneToOne(mappedBy = "adresse")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

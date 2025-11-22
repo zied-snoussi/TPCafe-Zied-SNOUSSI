@@ -3,8 +3,10 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Article;
+import tn.esprit.tpcafeziedsnoussi.entities.Promotion;
 import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.ArticleRepository;
+import tn.esprit.tpcafeziedsnoussi.repositories.PromotionRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IArticleService;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 public class ArticleService implements IArticleService {
 
     private final ArticleRepository articleRepository;
+    private final PromotionRepository promotionRepository;
 
     @Override
     public Article addArticle(Article article) {
@@ -83,6 +86,30 @@ public class ArticleService implements IArticleService {
         }
         
         return articleRepository.save(existingArticle);
+    }
+
+    @Override
+    public void affecterPromotionAArticle(Long idArticle, Long idPromo) {
+        Article article = articleRepository.findById(idArticle)
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", idArticle));
+        Promotion promo = promotionRepository.findById(idPromo)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion", "id", idPromo));
+        if (article.getPromotions() != null) {
+            article.getPromotions().add(promo);
+        }
+        articleRepository.save(article);
+    }
+
+    @Override
+    public void desaffecterPromotionAArticle(Long idArticle, Long idPromo) {
+        Article article = articleRepository.findById(idArticle)
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", idArticle));
+        Promotion promo = promotionRepository.findById(idPromo)
+                .orElseThrow(() -> new ResourceNotFoundException("Promotion", "id", idPromo));
+        if (article.getPromotions() != null) {
+            article.getPromotions().remove(promo);
+        }
+        articleRepository.save(article);
     }
 }
 

@@ -41,7 +41,6 @@ public class Promotion {
     @NotNull(message = "Promotion end date is required")
     LocalDate dateFinPromo;
 
-    // inverse side of many-to-many with Article
     @ManyToMany(mappedBy = "promotions")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
