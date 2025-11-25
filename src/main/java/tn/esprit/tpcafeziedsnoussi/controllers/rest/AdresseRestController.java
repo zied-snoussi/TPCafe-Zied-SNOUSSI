@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpcafeziedsnoussi.dtos.AdresseDTO;
 import tn.esprit.tpcafeziedsnoussi.mappers.AdresseMapper;
+import tn.esprit.tpcafeziedsnoussi.mappers.ClientMapper;
+import tn.esprit.tpcafeziedsnoussi.services.implementation.ClientService;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IAdressService;
 
 import java.util.List;
@@ -28,6 +30,8 @@ public class AdresseRestController {
 
     private final IAdressService adressService;
     private final AdresseMapper adresseMapper;
+    private final ClientService clientService;
+    private final ClientMapper clientMapper;
 
     @PostMapping
     @Operation(summary = "Create a new address", description = "Creates a new address in the system")
@@ -139,5 +143,23 @@ public class AdresseRestController {
     public ResponseEntity<Void> deleteAllAdresses() {
         adressService.deleteAllAdresses();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/assign-to-client")
+    @Operation(summary = "Add and assign address to client", description = "Creates a new address and assigns it to a specific client")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Address created and assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    public ResponseEntity<Void> ajouterEtAffecterAdressAClient(
+            @Parameter(description = "Address data to create", required = true)
+            @Valid @RequestBody AdresseDTO adresseDTO,
+            @Parameter(description = "Client data to assign the address to", required = true)
+            @Valid @RequestBody tn.esprit.tpcafeziedsnoussi.dtos.ClientDTO clientDTO) {
+        var adresse = adresseMapper.toEntity(adresseDTO);
+        var client = clientMapper.toEntity(clientDTO);
+        adressService.ajouterEtAffecterAdressAClient(adresse, client);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

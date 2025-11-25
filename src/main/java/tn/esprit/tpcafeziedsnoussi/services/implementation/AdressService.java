@@ -3,8 +3,10 @@ package tn.esprit.tpcafeziedsnoussi.services.implementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
+import tn.esprit.tpcafeziedsnoussi.entities.Client;
 import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.repositories.AdresseRepository;
+import tn.esprit.tpcafeziedsnoussi.repositories.ClientRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IAdressService;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 public class AdressService implements IAdressService {
 
     private final AdresseRepository adresseRepository;
+    private final ClientRepository clientRepository;
 
     @Override
     public Adresse addAdress(Adresse adresse) {
@@ -83,5 +86,15 @@ public class AdressService implements IAdressService {
         }
         
         return adresseRepository.save(existingAdresse);
+    }
+
+    @Override
+    public void ajouterEtAffecterAdressAClient(Adresse adresse, Client client) {
+        Client existingClient = clientRepository.findById(client.getIdClient())
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "id", client.getIdClient()));
+
+        Adresse savedAdresse = adresseRepository.save(adresse);
+        existingClient.setAdresse(savedAdresse);
+        clientRepository.save(existingClient);
     }
 }

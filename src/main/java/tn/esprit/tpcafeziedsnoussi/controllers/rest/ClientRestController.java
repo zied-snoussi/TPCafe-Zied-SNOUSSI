@@ -161,4 +161,18 @@ public class ClientRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/add-client-with-loyalty-card")
+    @Operation(summary = "Add client with loyalty card", description = "Creates a new client and assigns a loyalty card to them")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Client and loyalty card created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    public ResponseEntity<Void> ajouterClientEtAffecterCarteFidelite(
+            @Parameter(description = "Loyalty card data with client information", required = true)
+            @Valid @RequestBody ClientDTO clientDTO) {
+        var client = clientMapper.toEntity(clientDTO);
+        clientService.ajouterClientEtAffecterCarteFidelite(client.getCarteFidelite());
+        return ResponseEntity.ok().build();
+    }
+
 }

@@ -1,6 +1,7 @@
 package tn.esprit.tpcafeziedsnoussi.services.interfaces;
 
 import tn.esprit.tpcafeziedsnoussi.entities.Adresse;
+import tn.esprit.tpcafeziedsnoussi.entities.Client;
 
 import java.util.List;
 
@@ -15,4 +16,5 @@ public interface IAdressService {
     void deleteAllAdresses();
     void deleteAdressById(Long id);
     boolean verifAdressById(Long id);
+    void ajouterEtAffecterAdressAClient(Adresse adresse, Client client);
 }

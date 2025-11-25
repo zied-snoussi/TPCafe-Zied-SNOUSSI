@@ -107,5 +107,13 @@ public class CommandeService implements ICommandeService {
         commandeRepository.save(commande);
     }
 
+    @Override
+    public void ajouterCommandeEtAffecterAClient(Commande commande, String nomClient, String prenomClient) {
+        Client client = clientRepository.findByNomAndPrenom(nomClient, prenomClient)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "nom and prenom", nomClient + " " + prenomClient));
+        commande.setClient(client);
+        commandeRepository.save(commande);
+    }
+
 }
 

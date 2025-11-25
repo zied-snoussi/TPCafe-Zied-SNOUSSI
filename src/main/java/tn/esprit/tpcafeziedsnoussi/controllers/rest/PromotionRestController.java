@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpcafeziedsnoussi.dtos.PromotionDTO;
+import tn.esprit.tpcafeziedsnoussi.entities.Article;
+import tn.esprit.tpcafeziedsnoussi.entities.Promotion;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.mappers.PromotionMapper;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IPromotionService;
 
@@ -135,6 +138,23 @@ public class PromotionRestController {
     @ApiResponse(responseCode = "200", description = "All promotions deleted successfully")
     public ResponseEntity<Void> deleteAllPromotions() {
         promotionService.deleteAllPromotions();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/affecter/{idArticle}")
+    @Operation(summary = "Add and assign promotion to article", description = "Creates a new promotion and assigns it to a specific article")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Promotion created and assigned successfully"),
+            @ApiResponse(responseCode = "404", description = "Article not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    public ResponseEntity<Void> ajouterPromotionEtAffecterAArticle(
+            @Parameter(description = "Promotion data to create", required = true)
+            @Valid @RequestBody PromotionDTO promotionDTO,
+            @Parameter(description = "ID of the article to assign the promotion to", required = true)
+            @PathVariable Long idArticle) {
+        var promotion = promotionMapper.toEntity(promotionDTO);
+        promotionService.ajouterPromotionEtAffecterAArticle(promotion, idArticle);
         return ResponseEntity.ok().build();
     }
 }

@@ -119,5 +119,12 @@ public class ClientService implements IClientService {
         clientRepository.save(client);
     }
 
+    @Override
+    public void ajouterClientEtAffecterCarteFidelite(CarteFidelite carte) {
+        Client client = clientRepository.save(carte.getClient());
+        carte.setClient(client);
+        carteFideliteRepository.save(carte);
+    }
+
 }
 

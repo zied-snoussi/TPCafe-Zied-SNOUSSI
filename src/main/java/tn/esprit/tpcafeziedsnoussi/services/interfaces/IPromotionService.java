@@ -17,4 +17,5 @@ public interface IPromotionService {
     boolean verifPromotionById(Long id);
     void affcterPromotionAArticle(long idArticle, long idPromotion);
     void desaffecterPromotionDeArticle(long idArticle, long idPromotion);
+    void ajouterPromotionEtAffecterAArticle(Promotion promotion, long idArticle);
 }

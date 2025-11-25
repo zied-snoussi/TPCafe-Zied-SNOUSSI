@@ -102,5 +102,16 @@ public class PromotionService implements IPromotionService {
 
         articleRepository.save(article);
     }
+
+    @Override
+    public void ajouterPromotionEtAffecterAArticle(Promotion promotion, long idArticle) {
+        Article article = articleRepository.findById(idArticle)
+                .orElseThrow(() -> new ResourceNotFoundException("Article", "id", idArticle));
+        Promotion savedPromotion = promotionRepository.save(promotion);
+        article.getPromotions().add(savedPromotion);
+        articleRepository.save(article);
+    }
+
+
 }
 

@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import tn.esprit.tpcafeziedsnoussi.dtos.CommandeDTO;
+import tn.esprit.tpcafeziedsnoussi.entities.Client;
+import tn.esprit.tpcafeziedsnoussi.entities.Commande;
+import tn.esprit.tpcafeziedsnoussi.exceptions.ResourceNotFoundException;
 import tn.esprit.tpcafeziedsnoussi.mappers.CommandeMapper;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.ICommandeService;
 
@@ -161,5 +164,24 @@ public class CommandeRestController {
             @Parameter(description = "ID of the order", required = true) @PathVariable Long idCommande) {
         commandeService.desaffecterClientdeCommande(idCommande);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/ajouterAClient")
+    @Operation(summary = "Add order and assign to client", description = "Creates a new order and assigns it to a client based on their name and surname")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Order created and assigned to client successfully"),
+            @ApiResponse(responseCode = "404", description = "Client not found", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Invalid input data", content = @Content)
+    })
+    public ResponseEntity<CommandeDTO> ajouterCommandeEtAffecterAClient(
+            @Parameter(description = "Order data to create", required = true)
+            @Valid @RequestBody CommandeDTO commandeDTO,
+            @Parameter(description = "Client's first name", required = true)
+            @RequestParam String nomClient,
+            @Parameter(description = "Client's last name", required = true)
+            @RequestParam String prenomClient) {
+        var commande = commandeMapper.toEntity(commandeDTO);
+        commandeService.ajouterCommandeEtAffecterAClient(commande, nomClient, prenomClient);
+        return ResponseEntity.ok(commandeMapper.toDTO(commande));
     }
 }

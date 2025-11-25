@@ -17,4 +17,5 @@ public interface ICommandeService {
     boolean verifCommandeById(Long id);
     void affecterCommandeToClient(long idCommande, long idClient);
     void desaffecterClientdeCommande(Long idCommande);
+    void ajouterCommandeEtAffecterAClient(Commande commande, String nomClient, String prenomClient);
 }
