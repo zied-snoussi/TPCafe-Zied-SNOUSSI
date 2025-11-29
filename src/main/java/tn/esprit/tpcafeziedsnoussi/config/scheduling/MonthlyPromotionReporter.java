@@ -20,9 +20,6 @@ public class MonthlyPromotionReporter {
     private final PromotionRepository promotionRepository;
     private final SchedulingProperties schedulingProperties;
 
-    /**
-     * Runs at the beginning of each month (configurable cron) and logs promotions active for the current month
-     */
     @Scheduled(cron = "${scheduling.monthly-promo-cron}")
     @Transactional(readOnly = true)
     public void reportMonthlyPromotions() {
