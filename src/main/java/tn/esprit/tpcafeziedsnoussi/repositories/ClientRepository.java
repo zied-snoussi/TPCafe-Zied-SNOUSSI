@@ -176,4 +176,11 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     @Query("SELECT c FROM Client c WHERE c.carteFidelite.pointsAccumules <> :points")
     List<Client> findByPointsAccumulesNot(@Param("points") int points);
 
+    @Query("SELECT c FROM Client c WHERE MONTH(c.dateNaissance) = :month AND DAY(c.dateNaissance) = :day")
+    List<Client> findByBirthMonthAndDay(@Param("month") int month, @Param("day") int day);
+
+    // Join fetch version to avoid N+1 when accessing carteFidelite and adresse
+    @Query("SELECT c FROM Client c LEFT JOIN FETCH c.carteFidelite cf LEFT JOIN FETCH c.adresse a WHERE MONTH(c.dateNaissance) = :month AND DAY(c.dateNaissance) = :day")
+    List<Client> findByBirthMonthAndDayWithCardAndAddress(@Param("month") int month, @Param("day") int day);
+
 }

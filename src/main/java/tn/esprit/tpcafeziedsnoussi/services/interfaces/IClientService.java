@@ -17,8 +17,9 @@ public interface IClientService {
     void deleteClientById(Long id);
     boolean verifClientById(Long id);
     Client updateClientById(Long id, Client client);
-    Client addClinetWithAddress(Client client, Adresse adresse);
+    Client addClientWithAddress(Client client, Adresse adresse);
     String affecterAdresseAClient(Long idAdresse, Long idClient);
     void affecterCarteAClient(Long idCarte, Long idClient);
     void ajouterClientEtAffecterCarteFidelite(CarteFidelite carte);
+    void addClientEtCarteFidelite(Client client);
 }

@@ -11,6 +11,7 @@ import tn.esprit.tpcafeziedsnoussi.repositories.CarteFideliteRepository;
 import tn.esprit.tpcafeziedsnoussi.repositories.ClientRepository;
 import tn.esprit.tpcafeziedsnoussi.services.interfaces.IClientService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -69,7 +70,7 @@ public class ClientService implements IClientService {
     }
 
     @Override
-    public Client addClinetWithAddress(Client client, Adresse adresse) {
+    public Client addClientWithAddress(Client client, Adresse adresse) {
         client.setAdresse(adresse);
         return clientRepository.save(client);
     }
@@ -124,6 +125,16 @@ public class ClientService implements IClientService {
         Client client = clientRepository.save(carte.getClient());
         carte.setClient(client);
         carteFideliteRepository.save(carte);
+    }
+
+    @Override
+    public void addClientEtCarteFidelite(Client client) {
+        CarteFidelite carteFidelite = CarteFidelite.builder()
+                .pointsAccumules(0)
+                .dateCreation(LocalDate.now())
+                .build();
+        client.setCarteFidelite(carteFidelite);
+        clientRepository.save(client);
     }
 
 }
