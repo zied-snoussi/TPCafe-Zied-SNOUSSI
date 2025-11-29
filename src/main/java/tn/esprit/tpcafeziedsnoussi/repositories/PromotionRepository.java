@@ -156,4 +156,7 @@ public interface PromotionRepository extends JpaRepository<Promotion, Long> {
     @Query("SELECT p FROM Promotion p JOIN p.articles a WHERE a.idArticle = :articleId AND p.dateDebutPromo <= CURRENT_DATE AND p.dateFinPromo >= CURRENT_DATE")
     List<Promotion> findActivePromotionsByArticleId(@Param("articleId") Long articleId);
 
+    @Query("SELECT DISTINCT p FROM Promotion p LEFT JOIN FETCH p.articles a WHERE FUNCTION('MONTH', p.dateDebutPromo) <= :month AND FUNCTION('MONTH', p.dateFinPromo) >= :month AND FUNCTION('YEAR', p.dateDebutPromo) <= :year AND FUNCTION('YEAR', p.dateFinPromo) >= :year")
+    List<Promotion> findPromotionsActiveInMonthWithArticles(@Param("month") int month, @Param("year") int year);
+
 }

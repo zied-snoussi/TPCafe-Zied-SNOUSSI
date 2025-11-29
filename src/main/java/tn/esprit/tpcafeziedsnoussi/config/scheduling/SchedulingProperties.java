@@ -24,6 +24,9 @@ public class SchedulingProperties {
     // Minimum increase for non-zero points when 10% rounding yields 0
     private int birthdayMinIncreaseForNonzero = 1;
 
+    // Cron for monthly promotion reporter (default: first day of month at 00:00)
+    private String monthlyPromoCron = "0 0 0 1 * *";
+
     public long getSampleTaskFixedRateMs() {
         return sampleTaskFixedRateMs;
     }
@@ -70,5 +73,13 @@ public class SchedulingProperties {
 
     public void setBirthdayMinIncreaseForNonzero(int birthdayMinIncreaseForNonzero) {
         this.birthdayMinIncreaseForNonzero = birthdayMinIncreaseForNonzero;
+    }
+
+    public String getMonthlyPromoCron() {
+        return monthlyPromoCron;
+    }
+
+    public void setMonthlyPromoCron(String monthlyPromoCron) {
+        this.monthlyPromoCron = monthlyPromoCron;
     }
 }
